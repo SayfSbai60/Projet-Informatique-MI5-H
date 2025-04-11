@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_COMBATTANTS 20
 #define MAX_LIGNE 256
 
 typedef struct {
@@ -13,17 +12,28 @@ typedef struct {
     int vitesse;
 } Combattant;
 
-void charger_combattants(Combattant *liste, int *nb_combattants) {
+Combattant *charger_combattants(unsigned int *nb_combattants) {
     FILE *fichier = fopen("combattants.txt", "r");
     if (!fichier) {
-        printf("Erreur: Fichier 'combattants.txt' introuvable!\n");
+        printf("Erreur: Fichier 'combattants.txt' introuvable\n");
         exit(1);
     }
 
-    char ligne[MAX_LIGNE];
+    Combattant *liste = NULL;
     *nb_combattants = 0;
+    char ligne[MAX_LIGNE];
 
-    while (fgets(ligne, sizeof(ligne), fichier) && *nb_combattants < MAX_COMBATTANTS) {
+    while (fgets(ligne, sizeof(ligne), fichier)) {
+        
+        Combattant *temp = realloc(liste, (*nb_combattants + 1) * sizeof(Combattant));
+        if (!temp) {
+            printf("Erreur mémoire!\n");
+            free(liste);
+            fclose(fichier);
+            exit(1);
+        }
+        liste = temp;
+
         sscanf(
             ligne, "%[^;];%d;%d;%d;%d",
             liste[*nb_combattants].nom,
@@ -34,14 +44,16 @@ void charger_combattants(Combattant *liste, int *nb_combattants) {
         );
         (*nb_combattants)++;
     }
+
     fclose(fichier);
+    return liste;
 }
 
 void afficher_combattants(Combattant *liste, int nb) {
-    printf("\n=== LISTE DES COMBATTANTS ===\n");
+    printf("\n=== LISTE DES COMBATTANTS (%d) ===\n", nb);
     for (int i = 0; i < nb; i++) {
         printf("%d. %s (PV: %d, Att: %d, Def: %d, Vit: %d)\n",
-               i+1,
+               i + 1,
                liste[i].nom,
                liste[i].pv,
                liste[i].attaque,
@@ -50,20 +62,44 @@ void afficher_combattants(Combattant *liste, int nb) {
     }
 }
 
-void PvP(){
-    Combattant liste[MAX_COMBATTANTS];
+void PvP() {
     int nb_combattants = 0;
-    
-    charger_combattants(liste, &nb_combattants);
+    Combattant *liste = charger_combattants(&nb_combattants);
     afficher_combattants(liste, nb_combattants);
     
-   
+    
+    free(liste);
 }
 
-void menu_principal(){
+void choix_game() {
     int choix;
     do {
-        printf("\n=== MENU PRINCIPAL ===\n");
+        printf("\n=== MENU JEU ===\n");
+        printf("1. PvP\n");
+        printf("2. PvE\n");
+        printf("3. Retour\n");
+        printf("Choix : ");
+        scanf("%d", &choix);
+
+        switch (choix) {
+            case 1:
+                PvP();
+                break;
+            case 2:
+                printf("Mode PvE non implémenté.\n");
+                break;
+            case 3:
+                return; 
+            default:
+                printf("Choix invalide.\n");
+        }
+    } while (choix < 1 || choix > 3);
+}
+
+void menu_principal() {
+    int choix;
+    do {
+        printf("\n=== MENU PRINCIPALE ===\n");
         printf("1. Nouvelle partie\n");
         printf("2. Quitter\n");
         printf("Choix: ");
@@ -74,41 +110,12 @@ void menu_principal(){
                 choix_game();
                 break;
             case 2:
-                printf("A bientot!\n");
-                exit(1);
-                break;
+                printf("Au revoir !\n");
+                exit(0);
             default:
                 printf("Choix invalide.\n");
         }
     } while (choix != 2);
-}
-void choix_game() {
-    int choix;
-    do{
-        printf("\n===MENU JEU===\n");
-        printf("1. PvP\n");
-        printf("2. PvE\n");
-        printf("3.Retour\n");
-        printf("Choix : ");
-        scanf("%d",&choix);
-
-        switch(choix){
-            case 1:
-               PvP();
-               break;
-            case 2:
-              exit(1);
-            ///
-            ///
-              break;
-            case 3:
-              menu_principal();
-              break;
-            default:
-            printf("Choix Invalide\n");
-
-        }
-    }while (choix<1 || choix>3);
 }
 
 int main() {
