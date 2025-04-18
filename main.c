@@ -33,7 +33,7 @@ typedef struct {
 } Equipe;
 
 Combattant* charger_combattants(unsigned int* nb_combattants) {
-    FILE* fichier = fopen("combattants.txt", "r");
+    FILE* fichier = fopen("kk.txt", "r");
     if (!fichier) {
         printf("Erreur: Fichier 'combattants.txt' introuvable\n");
         exit(1);
@@ -218,6 +218,44 @@ void utiliser_technique_speciale(Combattant* utilisateur, TechniqueSpeciale* tec
     tech->rechargement = tech->rechargement;
 }
 
+void afficher_combat(Equipe e1, Equipe e2) {
+    printf("\n========================== COMBAT ==========================\n");
+    printf("| %-25s | %-25s |\n", e1.Nom_equipe, e2.Nom_equipe);
+    printf("|---------------------------|---------------------------|\n");
+    
+    // Combattant 1
+    printf("| 1. %-22s | 1. %-22s |\n", 
+           (e1.fighter_1.pv > 0) ? e1.fighter_1.nom : "[K.O.]", 
+           (e2.fighter_1.pv > 0) ? e2.fighter_1.nom : "[K.O.]");
+    printf("|   PV:%-4d Att:%-3d Def:%-3d |   PV:%-4d Att:%-3d Def:%-3d |\n",
+           (e1.fighter_1.pv > 0) ? e1.fighter_1.pv : 0,
+           e1.fighter_1.attaque, e1.fighter_1.defense,
+           (e2.fighter_1.pv > 0) ? e2.fighter_1.pv : 0,
+           e2.fighter_1.attaque, e2.fighter_1.defense);
+    
+    // Combattant 2
+    printf("| 2. %-22s | 2. %-22s |\n", 
+           (e1.fighter_2.pv > 0) ? e1.fighter_2.nom : "[K.O.]", 
+           (e2.fighter_2.pv > 0) ? e2.fighter_2.nom : "[K.O.]");
+    printf("|   PV:%-4d Att:%-3d Def:%-3d |   PV:%-4d Att:%-3d Def:%-3d |\n",
+           (e1.fighter_2.pv > 0) ? e1.fighter_2.pv : 0,
+           e1.fighter_2.attaque, e1.fighter_2.defense,
+           (e2.fighter_2.pv > 0) ? e2.fighter_2.pv : 0,
+           e2.fighter_2.attaque, e2.fighter_2.defense);
+    
+    // Combattant 3
+    printf("| 3. %-22s | 3. %-22s |\n", 
+           (e1.fighter_3.pv > 0) ? e1.fighter_3.nom : "[K.O.]", 
+           (e2.fighter_3.pv > 0) ? e2.fighter_3.nom : "[K.O.]");
+    printf("|   PV:%-4d Att:%-3d Def:%-3d |   PV:%-4d Att:%-3d Def:%-3d |\n",
+           (e1.fighter_3.pv > 0) ? e1.fighter_3.pv : 0,
+           e1.fighter_3.attaque, e1.fighter_3.defense,
+           (e2.fighter_3.pv > 0) ? e2.fighter_3.pv : 0,
+           e2.fighter_3.attaque, e2.fighter_3.defense);
+    
+    printf("===========================================================\n");
+}
+
 
 
 void afficher_details_combattant(Combattant c) {
@@ -336,6 +374,7 @@ void menu_pvp() {
     
     while (!equipe1_ko && !equipe2_ko) {
         printf("\n=== TOUR %d ===\n", tour);
+        afficher_combat(equipe1, equipe2);
         
         // Vérifier l'état des équipes
         equipe1_ko = verifier_equipe_ko(equipe1);
