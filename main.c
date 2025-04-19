@@ -48,9 +48,9 @@ typedef struct {
 } Equipe;
 
 Combattant* charger_combattants(unsigned int* nb_combattants) {
-    FILE* fichier = fopen("kk.txt", "r");
+    FILE* fichier = fopen("combattants.txt", "r");
     if (!fichier) {
-        printf("Erreur: Fichier 'kk.txt' introuvable\n");
+        printf("Erreur: Fichier 'combattants.txt' introuvable\n");
         exit(1);
     }
 
