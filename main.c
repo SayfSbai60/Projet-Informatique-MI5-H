@@ -19,7 +19,7 @@ typedef struct {
 typedef struct {
     int attaque_boost;
     int defense_boost;
-    int vitesse_boost;
+    int agilite_boost;
     int tours_restants;
 } EffetsTemporaires;
 
@@ -30,14 +30,13 @@ typedef struct {
     int attaque;
     int defense;
     int agilite;
-    int vitesse;
     TechniqueSpeciale spe_attaque;
     TechniqueSpeciale spe_defense;
-    TechniqueSpeciale spe_vitesse;
+    TechniqueSpeciale spe_agilite;
     EffetsTemporaires effets;
     int cooldown_attaque;
     int cooldown_defense;
-    int cooldown_vitesse;
+    int cooldown_agilite;
 } Combattant;
 
 typedef struct {
@@ -51,7 +50,7 @@ Combattant* charger_combattants(unsigned int* nb_combattants) {
     FILE* fichier = fopen("combattants.txt", "r");
     if (!fichier) {
         printf("Erreur: Fichier 'combattants.txt' introuvable\n");
-        exit(1);
+         exit(1);
     }
 
     Combattant* liste = malloc(MAX_COMBATTANTS * sizeof(Combattant));
@@ -71,7 +70,6 @@ Combattant* charger_combattants(unsigned int* nb_combattants) {
             &c->attaque,
             &c->defense,
             &c->agilite,
-            &c->vitesse,
             c->spe_attaque.nom,
             c->spe_attaque.description,
             &c->spe_attaque.valeur,
@@ -84,22 +82,22 @@ Combattant* charger_combattants(unsigned int* nb_combattants) {
             &c->spe_defense.duree,
             &c->spe_defense.rechargement,
             c->spe_defense.type_cible,
-            c->spe_vitesse.nom,
-            c->spe_vitesse.description,
-            &c->spe_vitesse.valeur,
-            &c->spe_vitesse.duree,
-            &c->spe_vitesse.rechargement,
-            c->spe_vitesse.type_cible
+            c->spe_agilite.nom,
+            c->spe_agilite.description,
+            &c->spe_agilite.valeur,
+            &c->spe_agilite.duree,
+            &c->spe_agilite.rechargement,
+            c->spe_agilite.type_cible
         );
 
         if (result == 25) {
             // Initialiser les cooldowns et effets
             c->cooldown_attaque = 0;
             c->cooldown_defense = 0;
-            c->cooldown_vitesse = 0;
+            c->cooldown_agilite = 0;
             c->effets.attaque_boost = 0;
             c->effets.defense_boost = 0;
-            c->effets.vitesse_boost = 0;
+            c->effets.agilite_boost = 0;
             c->effets.tours_restants = 0;
             (*nb_combattants)++;
         } else {
@@ -117,10 +115,10 @@ void appliquer_effets(Combattant* c) {
         if (c->effets.tours_restants == 0) {
             c->attaque -= c->effets.attaque_boost;
             c->defense -= c->effets.defense_boost;
-            c->vitesse -= c->effets.vitesse_boost;
+            c->agilite -= c->effets.agilite_boost;
             c->effets.attaque_boost = 0;
             c->effets.defense_boost = 0;
-            c->effets.vitesse_boost = 0;
+            c->effets.agilite_boost = 0;
             printf("%s: Les effets temporaires ont expire.\n", c->nom);
         }
     }
@@ -129,7 +127,7 @@ void appliquer_effets(Combattant* c) {
 void diminuer_cooldowns(Combattant* c) {
     if (c->cooldown_attaque > 0) c->cooldown_attaque--;
     if (c->cooldown_defense > 0) c->cooldown_defense--;
-    if (c->cooldown_vitesse > 0) c->cooldown_vitesse--;
+    if (c->cooldown_agilite > 0) c->cooldown_agilite--;
 }
 
 int verifier_equipe_ko(Equipe e) {
@@ -185,11 +183,13 @@ Combattant* choisir_cible(Equipe* equipe, const char* type) {
 void attaque_de_base(Combattant* attaquant, Equipe* equipe_adverse) {
     Combattant* cible = choisir_cible(equipe_adverse, "ennemie");
     
-    // Calcul de l'esquive basée sur l'agilité
-    int chance_esquive = cible->agilite - attaquant->agilite;
-    if (chance_esquive < 0) chance_esquive = 0;
+    // Calcul de l'esquive basée sur l'agilité (10% de base + différence d'agilité)
+    int chance_esquive = 10 + (cible->agilite - attaquant->agilite);
+    if (chance_esquive < 5) chance_esquive = 5;  // Minimum 5% de chance
+    if (chance_esquive > 40) chance_esquive = 40; // Maximum 40% de chance
+    
     if (rand() % 100 < chance_esquive) {
-        printf("%s esquive l'attaque grace a son agilite!\n", cible->nom);
+        printf("%s esquive l'attaque grace a son agilite (%d%% chance)!\n", cible->nom, chance_esquive);
         return;
     }
     
@@ -209,7 +209,11 @@ void attaque_de_base(Combattant* attaquant, Equipe* equipe_adverse) {
 }
 
 void appliquer_technique(Combattant* utilisateur, TechniqueSpeciale* tech, Combattant* cible) {
-    if (strstr(tech->description, "Augmente") || strstr(tech->description, "Renforce")) {
+    if (strstr(tech->description, "Augmente") || strstr(tech->description, "Renforce") || 
+        strstr(tech->description, "Protection") || strstr(tech->description, "Resistance") ||
+        strstr(tech->description, "Acceleration") || strstr(tech->description, "Déplacement") ||
+        strstr(tech->description, "Esquive") || strstr(tech->description, "Contre-attaque") ||
+        strstr(tech->description, "Barrière") || strstr(tech->description, "Endurance")) {
         // Effet de boost positif
         if (strstr(tech->description, "attaque") || strstr(tech->description, "Attaque")) {
             cible->attaque += tech->valeur;
@@ -217,16 +221,20 @@ void appliquer_technique(Combattant* utilisateur, TechniqueSpeciale* tech, Comba
             printf("%s: Attaque augmentee de %d pour %d tours!\n", 
                    cible->nom, tech->valeur, tech->duree);
         }
-        else if (strstr(tech->description, "defense") || strstr(tech->description, "Defense")) {
+        else if (strstr(tech->description, "defense") || strstr(tech->description, "Defense") ||
+                 strstr(tech->description, "Protection") || strstr(tech->description, "Resistance") ||
+                 strstr(tech->description, "Barrière") || strstr(tech->description, "Endurance")) {
             cible->defense += tech->valeur;
             cible->effets.defense_boost = tech->valeur;
             printf("%s: Defense augmentee de %d pour %d tours!\n", 
                    cible->nom, tech->valeur, tech->duree);
         }
-        else if (strstr(tech->description, "vitesse") || strstr(tech->description, "Vitesse")) {
-            cible->vitesse += tech->valeur;
-            cible->effets.vitesse_boost = tech->valeur;
-            printf("%s: Vitesse augmentee de %d pour %d tours!\n", 
+        else if (strstr(tech->description, "agilite") || strstr(tech->description, "Agilite") ||
+                 strstr(tech->description, "Acceleration") || strstr(tech->description, "Déplacement") ||
+                 strstr(tech->description, "Esquive")) {
+            cible->agilite += tech->valeur;
+            cible->effets.agilite_boost = tech->valeur;
+            printf("%s: Agilite augmentee de %d pour %d tours!\n", 
                    cible->nom, tech->valeur, tech->duree);
         }
         cible->effets.tours_restants = tech->duree;
@@ -240,24 +248,27 @@ void appliquer_technique(Combattant* utilisateur, TechniqueSpeciale* tech, Comba
         cible->pv = nouveau_pv;
     }
     else {
-        // Dégâts normaux
-        cible->pv -= tech->valeur;
-        printf("%s utilise %s sur %s et inflige %d degats!\n", 
-               utilisateur->nom, tech->nom, cible->nom, tech->valeur);
-        if (cible->pv <= 0) {
-            cible->pv = 0;
-            printf("%s est K.O.!\n", cible->nom);
+        // Dégâts normaux (uniquement pour les techniques d'attaque)
+        if (strcmp(tech->type_cible, "ennemi") == 0) {
+            cible->pv -= tech->valeur;
+            printf("%s utilise %s sur %s et inflige %d degats!\n", 
+                   utilisateur->nom, tech->nom, cible->nom, tech->valeur);
+            if (cible->pv <= 0) {
+                cible->pv = 0;
+                printf("%s est K.O.!\n", cible->nom);
+            }
+        } else {
+            printf("%s utilise %s sur %s pour un effet bénéfique!\n",
+                   utilisateur->nom, tech->nom, cible->nom);
         }
     }
 }
 
 void utiliser_technique_speciale(Combattant* utilisateur, TechniqueSpeciale* tech, Equipe* equipe_adverse, Equipe* equipe_alliee) {
-    // Techniques d'attaque ciblent toujours les ennemis
     if (tech == &utilisateur->spe_attaque) {
         Combattant* cible = choisir_cible(equipe_adverse, "ennemie");
         appliquer_technique(utilisateur, tech, cible);
     }
-    // Techniques de défense/vitesse ciblent toujours les alliés
     else {
         Combattant* cible = choisir_cible(equipe_alliee, "alliee");
         appliquer_technique(utilisateur, tech, cible);
@@ -268,8 +279,8 @@ void utiliser_technique_speciale(Combattant* utilisateur, TechniqueSpeciale* tec
         utilisateur->cooldown_attaque = tech->rechargement;
     } else if (tech == &utilisateur->spe_defense) {
         utilisateur->cooldown_defense = tech->rechargement;
-    } else if (tech == &utilisateur->spe_vitesse) {
-        utilisateur->cooldown_vitesse = tech->rechargement;
+    } else if (tech == &utilisateur->spe_agilite) {
+        utilisateur->cooldown_agilite = tech->rechargement;
     }
 }
 
@@ -284,8 +295,8 @@ void jouer_tour(Equipe* equipe_actuelle, Equipe* equipe_adverse) {
     printf("3. Technique speciale - Defense (%s)", combattant_actuel->spe_defense.nom);
     if (combattant_actuel->cooldown_defense > 0) printf(" (Recharge: %d)", combattant_actuel->cooldown_defense);
     printf("\n");
-    printf("4. Technique speciale - Vitesse (%s)", combattant_actuel->spe_vitesse.nom);
-    if (combattant_actuel->cooldown_vitesse > 0) printf(" (Recharge: %d)", combattant_actuel->cooldown_vitesse);
+    printf("4. Technique speciale - Agilite (%s)", combattant_actuel->spe_agilite.nom);
+    if (combattant_actuel->cooldown_agilite > 0) printf(" (Recharge: %d)", combattant_actuel->cooldown_agilite);
     printf("\n");
     
     int choix_action;
@@ -315,12 +326,12 @@ void jouer_tour(Equipe* equipe_actuelle, Equipe* equipe_adverse) {
             utiliser_technique_speciale(combattant_actuel, &combattant_actuel->spe_defense, equipe_adverse, equipe_actuelle); 
             break;
         case 4: 
-            if (combattant_actuel->cooldown_vitesse > 0) {
-                printf("Technique pas encore prete! (%d tours restants)\n", combattant_actuel->cooldown_vitesse);
+            if (combattant_actuel->cooldown_agilite > 0) {
+                printf("Technique pas encore prete! (%d tours restants)\n", combattant_actuel->cooldown_agilite);
                 jouer_tour(equipe_actuelle, equipe_adverse);
                 return;
             }
-            utiliser_technique_speciale(combattant_actuel, &combattant_actuel->spe_vitesse, equipe_adverse, equipe_actuelle); 
+            utiliser_technique_speciale(combattant_actuel, &combattant_actuel->spe_agilite, equipe_adverse, equipe_actuelle); 
             break;
     }
     
@@ -368,8 +379,8 @@ void afficher_combat(Equipe e1, Equipe e2) {
 
 void afficher_details_combattant(Combattant c) {
     printf("\n=== %s ===\n", c.nom);
-    printf("PV: %d/%d | Att: %d | Def: %d | Agi: %d | Vit: %d\n", 
-           c.pv, c.pv_max, c.attaque, c.defense, c.agilite, c.vitesse);
+    printf("PV: %d/%d | Att: %d | Def: %d | Agi: %d\n", 
+           c.pv, c.pv_max, c.attaque, c.defense, c.agilite);
     
     printf("\nAttaque speciale:\n");
     printf("- %s: %s\n", c.spe_attaque.nom, c.spe_attaque.description);
@@ -383,31 +394,30 @@ void afficher_details_combattant(Combattant c) {
            c.spe_defense.valeur, c.spe_defense.duree, 
            c.spe_defense.rechargement, c.spe_defense.type_cible);
     
-    printf("\nVitesse speciale:\n");
-    printf("- %s: %s\n", c.spe_vitesse.nom, c.spe_vitesse.description);
+    printf("\nAgilite speciale:\n");
+    printf("- %s: %s\n", c.spe_agilite.nom, c.spe_agilite.description);
     printf("  Valeur: %d | Duree: %d tours | Recharge: %d tours | Cible: %s\n",
-           c.spe_vitesse.valeur, c.spe_vitesse.duree, 
-           c.spe_vitesse.rechargement, c.spe_vitesse.type_cible);
+           c.spe_agilite.valeur, c.spe_agilite.duree, 
+           c.spe_agilite.rechargement, c.spe_agilite.type_cible);
     
     if (c.effets.tours_restants > 0) {
         printf("\nEffets temporaires (%d tours restants):\n", c.effets.tours_restants);
         if (c.effets.attaque_boost != 0) printf("- Attaque +%d\n", c.effets.attaque_boost);
         if (c.effets.defense_boost != 0) printf("- Defense +%d\n", c.effets.defense_boost);
-        if (c.effets.vitesse_boost != 0) printf("- Vitesse +%d\n", c.effets.vitesse_boost);
+        if (c.effets.agilite_boost != 0) printf("- Agilite +%d\n", c.effets.agilite_boost);
     }
 }
 
 void afficher_liste_combattants(Combattant* liste, int nb) {
     printf("\n=== LISTE DES COMBATTANTS (%d) ===\n", nb);
     for (int i = 0; i < nb; i++) {
-        printf("\n%d. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d, Vit: %d)\n",
+        printf("\n%d. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d)\n",
                i + 1,
                liste[i].nom,
                liste[i].pv, liste[i].pv_max,
                liste[i].attaque,
                liste[i].defense,
-               liste[i].agilite,
-               liste[i].vitesse);
+               liste[i].agilite);
         
         printf("   Attaque: %s (%s) - Rech: %d tours\n", 
                liste[i].spe_attaque.nom, liste[i].spe_attaque.description,
@@ -415,14 +425,14 @@ void afficher_liste_combattants(Combattant* liste, int nb) {
         printf("   Defense: %s (%s) - Rech: %d tours\n",
                liste[i].spe_defense.nom, liste[i].spe_defense.description,
                liste[i].spe_defense.rechargement);
-        printf("   Vitesse: %s (%s) - Rech: %d tours\n",
-               liste[i].spe_vitesse.nom, liste[i].spe_vitesse.description,
-               liste[i].spe_vitesse.rechargement);
+        printf("   Agilite: %s (%s) - Rech: %d tours\n",
+               liste[i].spe_agilite.nom, liste[i].spe_agilite.description,
+               liste[i].spe_agilite.rechargement);
     }
 }
 
 Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
-    Equipe e;
+     Equipe e;
     int choix;
     int combattants_choisis[3] = {0};
 
@@ -485,15 +495,15 @@ Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
 
 void afficher_equipe(Equipe e) {
     printf("\n=== EQUIPE: %s ===\n", e.Nom_equipe);
-    printf("1. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d, Vit: %d)\n", 
+    printf("1. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d)\n", 
            e.fighter_1->nom, e.fighter_1->pv, e.fighter_1->pv_max, 
-           e.fighter_1->attaque, e.fighter_1->defense, e.fighter_1->agilite, e.fighter_1->vitesse);
-    printf("2. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d, Vit: %d)\n", 
+           e.fighter_1->attaque, e.fighter_1->defense, e.fighter_1->agilite);
+    printf("2. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d)\n", 
            e.fighter_2->nom, e.fighter_2->pv, e.fighter_2->pv_max,
-           e.fighter_2->attaque, e.fighter_2->defense, e.fighter_2->agilite, e.fighter_2->vitesse);
-    printf("3. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d, Vit: %d)\n", 
+           e.fighter_2->attaque, e.fighter_2->defense, e.fighter_2->agilite);
+    printf("3. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d)\n", 
            e.fighter_3->nom, e.fighter_3->pv, e.fighter_3->pv_max,
-           e.fighter_3->attaque, e.fighter_3->defense, e.fighter_3->agilite, e.fighter_3->vitesse);
+           e.fighter_3->attaque, e.fighter_3->defense, e.fighter_3->agilite);
 }
 
 void liberer_equipe(Equipe e) {
