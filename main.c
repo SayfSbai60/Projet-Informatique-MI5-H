@@ -49,59 +49,45 @@ typedef struct {
 Combattant* charger_combattants(unsigned int* nb_combattants) {
     FILE* fichier = fopen("combattants.txt", "r");
     if (!fichier) {
-        printf("Erreur: Fichier 'combattants.txt' introuvable\n");
-         exit(1);
+        perror("Erreur ouverture fichier");
+        exit(EXIT_FAILURE);
     }
 
     Combattant* liste = malloc(MAX_COMBATTANTS * sizeof(Combattant));
+    if (!liste) {
+        perror("Erreur allocation mémoire");
+        fclose(fichier);
+        exit(EXIT_FAILURE);
+    }
+
     *nb_combattants = 0;
     char ligne[MAX_LIGNE];
-    int numero;
 
     while (fgets(ligne, sizeof(ligne), fichier) && *nb_combattants < MAX_COMBATTANTS) {
         Combattant* c = &liste[*nb_combattants];
-        
-        int result = sscanf(
-            ligne, "%d;%49[^;];%d;%d;%d;%d;%d;%49[^;];%99[^;];%d;%d;%d;%9[^;];%49[^;];%99[^;];%d;%d;%d;%9[^;];%49[^;];%99[^;];%d;%d;%d;%9[^\n]",
-            &numero,
+
+        int lus = sscanf(ligne,
+            "%*d;%49[^;];%d;%d;%d;%d;%d;%49[^;];%99[^;];%d;%d;%d;%9[^;];"
+            "%49[^;];%99[^;];%d;%d;%d;%9[^;];"
+            "%49[^;];%99[^;];%d;%d;%d;%9[^\n]",
             c->nom,
-            &c->pv,
-            &c->pv_max,
-            &c->attaque,
-            &c->defense,
-            &c->agilite,
-            c->spe_attaque.nom,
-            c->spe_attaque.description,
-            &c->spe_attaque.valeur,
-            &c->spe_attaque.duree,
-            &c->spe_attaque.rechargement,
-            c->spe_attaque.type_cible,
-            c->spe_defense.nom,
-            c->spe_defense.description,
-            &c->spe_defense.valeur,
-            &c->spe_defense.duree,
-            &c->spe_defense.rechargement,
-            c->spe_defense.type_cible,
-            c->spe_agilite.nom,
-            c->spe_agilite.description,
-            &c->spe_agilite.valeur,
-            &c->spe_agilite.duree,
-            &c->spe_agilite.rechargement,
-            c->spe_agilite.type_cible
+            &c->pv, &c->pv_max, &c->attaque, &c->defense, &c->agilite,
+            c->spe_attaque.nom, c->spe_attaque.description, &c->spe_attaque.valeur,
+            &c->spe_attaque.duree, &c->spe_attaque.rechargement, c->spe_attaque.type_cible,
+            c->spe_defense.nom, c->spe_defense.description, &c->spe_defense.valeur,
+            &c->spe_defense.duree, &c->spe_defense.rechargement, c->spe_defense.type_cible,
+            c->spe_agilite.nom, c->spe_agilite.description, &c->spe_agilite.valeur,
+            &c->spe_agilite.duree, &c->spe_agilite.rechargement, c->spe_agilite.type_cible
         );
 
-        if (result == 25) {
-            // Initialiser les cooldowns et effets
-            c->cooldown_attaque = 0;
-            c->cooldown_defense = 0;
-            c->cooldown_agilite = 0;
-            c->effets.attaque_boost = 0;
-            c->effets.defense_boost = 0;
-            c->effets.agilite_boost = 0;
+        if (lus == 25) {
+            // Réinitialisation des états
+            c->cooldown_attaque = c->cooldown_defense = c->cooldown_agilite = 0;
+            c->effets.attaque_boost = c->effets.defense_boost = c->effets.agilite_boost = 0;
             c->effets.tours_restants = 0;
             (*nb_combattants)++;
         } else {
-            printf("Erreur de format (%d champs lus): %s\n", result, ligne);
+            fprintf(stderr, "Ligne mal formatée (%d champs): %s", lus, ligne);
         }
     }
 
