@@ -98,6 +98,22 @@ Combattant* charger_combattants(unsigned int* nb_combattants) {
     return liste;
 }
 
+void afficher_separateur(int longueur) {
+    printf("+");
+    for (int i = 0; i < longueur-2; i++) printf("-");
+    printf("+\n");
+}
+
+void afficher_ligne_vide(int longueur) {
+    printf("|");
+    for (int i = 0; i < longueur-2; i++) printf(" ");
+    printf("|\n");
+}
+
+void afficher_ligne_texte(int longueur, const char* texte) {
+    printf("| %-*s |\n", longueur-4, texte);
+}
+
 
 void appliquer_effets(Combattant* c) {
     if (c->effets.tours_restants > 0) {
@@ -384,94 +400,101 @@ void jouer_tour(Equipe* equipe_actuelle, Equipe* equipe_adverse) {
 }
 
 void afficher_combat(Equipe e1, Equipe e2) {
-    printf("\n========================== COMBAT ==========================\n");
-    printf("| %-25s | %-25s |\n", e1.Nom_equipe, e2.Nom_equipe);
-    printf("|---------------------------|---------------------------|\n");
+    const int largeur = 80;
+    
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| %-76s |\n", "ONE PIECE FIGHT");
+    afficher_separateur(largeur);
+    
+    // En-tête équipes
+    printf("| %-36s | %-36s |\n", e1.Nom_equipe, e2.Nom_equipe);
+    afficher_separateur(largeur);
     
     // Combattant 1
-    printf("| 1. %-22s | 1. %-22s |\n", 
-           (e1.fighter_1->pv > 0) ? e1.fighter_1->nom : "[K.O.]", 
-           (e2.fighter_1->pv > 0) ? e2.fighter_1->nom : "[K.O.]");
-    printf("|   PV: %-4d Att: %-3d Def: %-3d |   PV: %-4d Att: %-3d Def: %-3d |\n",
-           (e1.fighter_1->pv > 0) ? e1.fighter_1->pv : 0,
-           e1.fighter_1->attaque, e1.fighter_1->defense,
-           (e2.fighter_1->pv > 0) ? e2.fighter_1->pv : 0,
-           e2.fighter_1->attaque, e2.fighter_1->defense);
+    printf("| 1. %-22s (PV: %-4d) | 1. %-22s (PV: %-4d) |\n",
+           e1.fighter_1->pv > 0 ? e1.fighter_1->nom : "[K.O.]", e1.fighter_1->pv,
+           e2.fighter_1->pv > 0 ? e2.fighter_1->nom : "[K.O.]", e2.fighter_1->pv);
     
     // Combattant 2
-    printf("| 2. %-22s | 2. %-22s |\n", 
-           (e1.fighter_2->pv > 0) ? e1.fighter_2->nom : "[K.O.]", 
-           (e2.fighter_2->pv > 0) ? e2.fighter_2->nom : "[K.O.]");
-    printf("|   PV: %-4d Att: %-3d Def: %-3d |   PV: %-4d Att: %-3d Def: %-3d |\n",
-           (e1.fighter_2->pv > 0) ? e1.fighter_2->pv : 0,
-           e1.fighter_2->attaque, e1.fighter_2->defense,
-           (e2.fighter_2->pv > 0) ? e2.fighter_2->pv : 0,
-           e2.fighter_2->attaque, e2.fighter_2->defense);
+    printf("| 2. %-22s (PV: %-4d) | 2. %-22s (PV: %-4d) |\n",
+           e1.fighter_2->pv > 0 ? e1.fighter_2->nom : "[K.O.]", e1.fighter_2->pv,
+           e2.fighter_2->pv > 0 ? e2.fighter_2->nom : "[K.O.]", e2.fighter_2->pv);
     
     // Combattant 3
-    printf("| 3. %-22s | 3. %-22s |\n", 
-           (e1.fighter_3->pv > 0) ? e1.fighter_3->nom : "[K.O.]", 
-           (e2.fighter_3->pv > 0) ? e2.fighter_3->nom : "[K.O.]");
-    printf("|   PV: %-4d Att: %-3d Def: %-3d |   PV: %-4d Att: %-3d Def: %-3d |\n",
-           (e1.fighter_3->pv > 0) ? e1.fighter_3->pv : 0,
-           e1.fighter_3->attaque, e1.fighter_3->defense,
-           (e2.fighter_3->pv > 0) ? e2.fighter_3->pv : 0,
-           e2.fighter_3->attaque, e2.fighter_3->defense);
+    printf("| 3. %-22s (PV: %-4d) | 3. %-22s (PV: %-4d) |\n",
+           e1.fighter_3->pv > 0 ? e1.fighter_3->nom : "[K.O.]", e1.fighter_3->pv,
+           e2.fighter_3->pv > 0 ? e2.fighter_3->nom : "[K.O.]", e2.fighter_3->pv);
     
-    printf("===========================================================\n");
+    afficher_separateur(largeur);
 }
 
+
 void afficher_details_combattant(Combattant c) {
-    printf("\n=== %s ===\n", c.nom);
-    printf("PV: %d/%d | Att: %d | Def: %d | Agi: %d\n", 
+    const int largeur = 60;
+    
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| %-56s |\n", c.nom);
+    afficher_separateur(largeur);
+    printf("| PV: %-4d/%d | Att: %-3d | Def: %-3d | Agi: %-3d |\n",
            c.pv, c.pv_max, c.attaque, c.defense, c.agilite);
+    afficher_separateur(largeur);
     
-    printf("\nAttaque speciale:\n");
-    printf("- %s: %s\n", c.spe_attaque.nom, c.spe_attaque.description);
-    printf("  Valeur: %d | Duree: %d tours | Recharge: %d tours | Cible: %s\n",
-           c.spe_attaque.valeur, c.spe_attaque.duree, 
-           c.spe_attaque.rechargement, c.spe_attaque.type_cible);
+    // Attaque spéciale
+    printf("| %-56s |\n", "Attaque spéciale:");
+    printf("| %-56s |\n", c.spe_attaque.nom);
+    printf("| %-56s |\n", c.spe_attaque.description);
+    printf("| Valeur: %-4d | Durée: %-2d tours | Recharge: %-2d tours |\n",
+           c.spe_attaque.valeur, c.spe_attaque.duree, c.spe_attaque.rechargement);
+    afficher_separateur(largeur);
     
-    printf("\nDefense speciale:\n");
-    printf("- %s: %s\n", c.spe_defense.nom, c.spe_defense.description);
-    printf("  Valeur: %d | Duree: %d tours | Recharge: %d tours | Cible: %s\n",
-           c.spe_defense.valeur, c.spe_defense.duree, 
-           c.spe_defense.rechargement, c.spe_defense.type_cible);
+    // Défense spéciale
+    printf("| %-56s |\n", "Défense spéciale:");
+    printf("| %-56s |\n", c.spe_defense.nom);
+    printf("| %-56s |\n", c.spe_defense.description);
+    printf("| Valeur: %-4d | Durée: %-2d tours | Recharge: %-2d tours |\n",
+           c.spe_defense.valeur, c.spe_defense.duree, c.spe_defense.rechargement);
+    afficher_separateur(largeur);
     
-    printf("\nAgilite speciale:\n");
-    printf("- %s: %s\n", c.spe_agilite.nom, c.spe_agilite.description);
-    printf("  Valeur: %d | Duree: %d tours | Recharge: %d tours | Cible: %s\n",
-           c.spe_agilite.valeur, c.spe_agilite.duree, 
-           c.spe_agilite.rechargement, c.spe_agilite.type_cible);
+    // Agilité spéciale
+    printf("| %-56s |\n", "Agilité spéciale:");
+    printf("| %-56s |\n", c.spe_agilite.nom);
+    printf("| %-56s |\n", c.spe_agilite.description);
+    printf("| Valeur: %-4d | Durée: %-2d tours | Recharge: %-2d tours |\n",
+           c.spe_agilite.valeur, c.spe_agilite.duree, c.spe_agilite.rechargement);
     
     if (c.effets.tours_restants > 0) {
-        printf("\nEffets temporaires (%d tours restants):\n", c.effets.tours_restants);
-        if (c.effets.attaque_boost != 0) printf("- Attaque +%d\n", c.effets.attaque_boost);
-        if (c.effets.defense_boost != 0) printf("- Defense +%d\n", c.effets.defense_boost);
-        if (c.effets.agilite_boost != 0) printf("- Agilite +%d\n", c.effets.agilite_boost);
+        afficher_separateur(largeur);
+        printf("| Effets temporaires (%d tours restants):%-25s |\n", 
+               c.effets.tours_restants, "");
+        if (c.effets.attaque_boost != 0) 
+            printf("| - Attaque +%-50d |\n", c.effets.attaque_boost);
+        if (c.effets.defense_boost != 0) 
+            printf("| - Defense +%-49d |\n", c.effets.defense_boost);
+        if (c.effets.agilite_boost != 0) 
+            printf("| - Agilité +%-49d |\n", c.effets.agilite_boost);
     }
+    
+    afficher_separateur(largeur);
 }
 
 void afficher_liste_combattants(Combattant* liste, int nb) {
-    printf("\n=== LISTE DES COMBATTANTS (%d) ===\n", nb);
+    const int largeur = 80;
+    
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| LISTE DES COMBATTANTS (%d)%-55s |\n", nb, "");
+    afficher_separateur(largeur);
+    
     for (int i = 0; i < nb; i++) {
-        printf("\n%d. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d)\n",
-               i + 1,
-               liste[i].nom,
-               liste[i].pv, liste[i].pv_max,
-               liste[i].attaque,
-               liste[i].defense,
-               liste[i].agilite);
+        printf("| %2d. %-20s PV: %4d Att: %3d Def: %3d Agi: %3d |\n",
+               i+1, liste[i].nom, liste[i].pv, 
+               liste[i].attaque, liste[i].defense, liste[i].agilite);
         
-        printf("   Attaque: %s (%s) - Rech: %d tours\n", 
-               liste[i].spe_attaque.nom, liste[i].spe_attaque.description,
-               liste[i].spe_attaque.rechargement);
-        printf("   Defense: %s (%s) - Rech: %d tours\n",
-               liste[i].spe_defense.nom, liste[i].spe_defense.description,
-               liste[i].spe_defense.rechargement);
-        printf("   Agilite: %s (%s) - Rech: %d tours\n",
-               liste[i].spe_agilite.nom, liste[i].spe_agilite.description,
-               liste[i].spe_agilite.rechargement);
+        if ((i+1) % 5 == 0 || i == nb-1) {
+            afficher_separateur(largeur);
+        }
     }
 }
 
@@ -479,15 +502,21 @@ Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
     Equipe e;
     int choix;
     char input[10];
-    int combattants_choisis[3] = {0};
+    const int largeur = 70;
 
-    printf("\n=== CREATION EQUIPE %d ===\n", num_equipe);
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| CREATION EQUIPE %-51d |\n", num_equipe);
+    afficher_separateur(largeur);
     
-    printf("Nom de l'equipe: ");
-    if (fgets(e.Nom_equipe, sizeof(e.Nom_equipe), stdin) == NULL) {
+    printf("| Nom de l'equipe: %-49s |\n", "");
+    printf("| ");
+    if (fgets(e.Nom_equipe, sizeof(e.Nom_equipe), stdin)) {
+        e.Nom_equipe[strcspn(e.Nom_equipe, "\n")] = '\0';
+    } else {
         strcpy(e.Nom_equipe, "Equipe sans nom");
     }
-    e.Nom_equipe[strcspn(e.Nom_equipe, "\n")] = '\0';
+    printf("\033[A\033[18C%s\n", e.Nom_equipe);
 
     afficher_liste_combattants(liste, nb_combattants);
 
@@ -497,35 +526,24 @@ Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
 
     for (int i = 0; i < 3; i++) {
         do {
-            printf("\nChoix du combattant %d (1-%d): ", i + 1, nb_combattants);
-            if (fgets(input, sizeof(input), stdin) == NULL) {
-                printf("Erreur de lecture.\n");
-                continue;
-            }
-            if (sscanf(input, "%d", &choix) != 1) {
-                printf("Entree invalide! Veuillez entrer un nombre.\n");
-                continue;
-            }
-
-            if (choix < 1 || choix > nb_combattants) {
-                printf("Choix invalide! Veuillez choisir entre 1 et %d\n", nb_combattants);
-                continue;
-            }
-
-            int deja_choisi = 0;
-            for (int j = 0; j < i; j++) {
-                if (combattants_choisis[j] == choix) {
-                    deja_choisi = 1;
+            printf("\n");
+            afficher_separateur(largeur);
+            printf("| Selectionnez le combattant %d/3 (1-%d):%-30s |\n", 
+                  i+1, nb_combattants, "");
+            afficher_separateur(largeur);
+            printf("| Choix: %-60s |\n", "");
+            
+            // Positionnement curseur
+            printf("\033[A\033[8C");
+            
+            if (fgets(input, sizeof(input), stdin) && sscanf(input, "%d", &choix) == 1) {
+                if (choix >= 1 && choix <= nb_combattants) {
+                    // Vérifier si déjà choisi...
+                    printf("| %-60s |\n", liste[choix-1].nom);
                     break;
                 }
             }
-
-            if (deja_choisi) {
-                printf("Ce combattant est deja dans l'equipe!\n");
-            } else {
-                combattants_choisis[i] = choix;
-                break;
-            }
+            printf("Choix invalide!\n");
         } while (1);
 
         switch (i) {
@@ -541,16 +559,26 @@ Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
 }
 
 void afficher_equipe(Equipe e) {
-    printf("\n=== EQUIPE: %s ===\n", e.Nom_equipe);
-    printf("1. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d)\n", 
-           e.fighter_1->nom, e.fighter_1->pv, e.fighter_1->pv_max, 
+    const int largeur = 70;
+    
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| EQUIPE: %-59s |\n", e.Nom_equipe);
+    afficher_separateur(largeur);
+    
+    printf("| 1. %-20s PV: %4d Att: %3d Def: %3d Agi: %3d |\n",
+           e.fighter_1->nom, e.fighter_1->pv, 
            e.fighter_1->attaque, e.fighter_1->defense, e.fighter_1->agilite);
-    printf("2. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d)\n", 
-           e.fighter_2->nom, e.fighter_2->pv, e.fighter_2->pv_max,
+    
+    printf("| 2. %-20s PV: %4d Att: %3d Def: %3d Agi: %3d |\n",
+           e.fighter_2->nom, e.fighter_2->pv,
            e.fighter_2->attaque, e.fighter_2->defense, e.fighter_2->agilite);
-    printf("3. %s (PV: %d/%d, Att: %d, Def: %d, Agi: %d)\n", 
-           e.fighter_3->nom, e.fighter_3->pv, e.fighter_3->pv_max,
+    
+    printf("| 3. %-20s PV: %4d Att: %3d Def: %3d Agi: %3d |\n",
+           e.fighter_3->nom, e.fighter_3->pv,
            e.fighter_3->attaque, e.fighter_3->defense, e.fighter_3->agilite);
+    
+    afficher_separateur(largeur);
 }
 
 void liberer_equipe(Equipe e) {
@@ -600,37 +628,59 @@ void menu_pvp() {
     unsigned int nb_combattants;
     Combattant* liste = charger_combattants(&nb_combattants);
 
-    printf("\n=== MODE PVP ===\n");
+    const int largeur = 60;
+    
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| %-58s |\n", "MODE PVP");
+    afficher_separateur(largeur);
+    
+    printf("| %-58s |\n", "Creation de l'equipe 1");
+    afficher_separateur(largeur);
     Equipe equipe1 = creer_equipe(liste, nb_combattants, 1);
+    
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| %-58s |\n", "Creation de l'equipe 2");
+    afficher_separateur(largeur);
     Equipe equipe2 = creer_equipe(liste, nb_combattants, 2);
 
-    printf("\n=== EQUIPES PRETES ===\n");
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| %-58s |\n", "Equipes pretes !");
+    afficher_separateur(largeur);
     afficher_equipe(equipe1);
     afficher_equipe(equipe2);
 
     free(liste);
-
     combat_pvp(equipe1, equipe2);
 }
 
 int choisir_difficulte() {
+    const int largeur = 50;
     int choix;
     char input[10];
+    
     do {
-        printf("\nChoisissez la difficulte:\n");
-        printf("1. Noob (facile)\n");
-        printf("2. Facile\n");
-        printf("3. Moyen\n");
-        printf("Choix: ");
-        if (fgets(input, sizeof(input), stdin) == NULL) {
-            printf("Erreur de lecture.\n");
-            continue;
+        printf("\n");
+        afficher_separateur(largeur);
+        printf("| %-48s |\n", "CHOIX DE LA DIFFICULTE");
+        afficher_separateur(largeur);
+        printf("| %-48s |\n", "1. Noob (facile)");
+        printf("| %-48s |\n", "2. Facile");
+        printf("| %-48s |\n", "3. Moyen");
+        afficher_separateur(largeur);
+        printf("| Choix: %-40s |\n", "");
+        
+        // Positionnement curseur
+        printf("\033[A\033[9C");
+        
+        if (fgets(input, sizeof(input), stdin) && sscanf(input, "%d", &choix) == 1) {
+            if (choix >= 1 && choix <= 3) break;
         }
-        if (sscanf(input, "%d", &choix) != 1) {
-            printf("Entree invalide! Veuillez entrer un nombre.\n");
-            continue;
-        }
-    } while (choix < 1 || choix > 3);
+        printf("Choix invalide! (1-3)\n");
+    } while (1);
+    
     return choix;
 }
 
@@ -740,14 +790,27 @@ void jouer_ia_autonome(Equipe* equipe_ia, Equipe* equipe_joueur, int difficulte)
 void menu_pve() {
     unsigned int nb_combattants;
     Combattant* liste = charger_combattants(&nb_combattants);
+    const int largeur = 60;
 
-    printf("\n=== MODE PVE ===\n");
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| %-58s |\n", "MODE PVE");
+    afficher_separateur(largeur);
+    
     int difficulte = choisir_difficulte();
     
-    // Équipe joueur (choix manuel)
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| %-58s |\n", "Creation de votre equipe");
+    afficher_separateur(largeur);
     Equipe equipe_joueur = creer_equipe(liste, nb_combattants, 1);
     
-    // Équipe IA (génération automatique)
+    printf("\n");
+    afficher_separateur(largeur);
+    printf("| %-58s |\n", "Generation de l'equipe IA");
+    afficher_separateur(largeur);
+    
+    // Génération équipe IA...
     Equipe equipe_ia;
     strcpy(equipe_ia.Nom_equipe, "IA Enemy");
     equipe_ia.fighter_1 = malloc(sizeof(Combattant));
@@ -768,40 +831,51 @@ void menu_pve() {
 
     printf("\n=== ÉQUIPE IA GENEREE AUTOMATIQUEMENT ===\n");
     afficher_equipe(equipe_ia);
+    
     free(liste);
-
     combat_autonome(equipe_joueur, equipe_ia, difficulte);
 }
 
 void menu_principal() {
+    const int largeur = 40;
     int choix;
     char input[10];
+    
     do {
-        printf("\n=== ONE PIECE FIGHT ===\n");
-        printf("1. Mode PvP\n");
-        printf("2. Mode PvE\n");
-        printf("3. Quitter\n");
-        printf("Choix: ");
+        printf("\n");
+        afficher_separateur(largeur);
+        printf("| %-38s |\n", "ONE PIECE FIGHT");
+        afficher_separateur(largeur);
+        printf("| %-38s |\n", "1. Mode PvP (Joueur vs Joueur)");
+        printf("| %-38s |\n", "2. Mode PvE (Joueur vs IA)");
+        printf("| %-38s |\n", "3. Quitter");
+        afficher_separateur(largeur);
+        printf("| Choix: %-30s |\n", "");
         
-        if (fgets(input, sizeof(input), stdin) == NULL) {
-            printf("Erreur de lecture.\n");
-            continue;
-        }
-        if (sscanf(input, "%d", &choix) != 1) {
-            printf("Entree invalide! Veuillez entrer un nombre entre 1 et 3.\n");
-            continue;
+        // Positionner le curseur pour le choix
+        printf("\033[A"); // Remonter d'une ligne
+        printf("\033[9C"); // Avancer de 9 caractères
+        
+        if (fgets(input, sizeof(input), stdin)){
+            sscanf(input, "%d", &choix);
+        } else {
+            choix = 0;
         }
 
         switch (choix) {
             case 1: menu_pvp(); break;
             case 2: menu_pve(); break;
-            case 3: printf("Au revoir!\n"); exit(0);
-            default: printf("Choix invalide!\n");
+            case 3: 
+                printf("\nMerci d'avoir joué !\n");
+                exit(0);
+            default: 
+                printf("Choix invalide!\n");
         }
     } while (1);
 }
 
 int main(){
+
     menu_principal();
     return 0;
 }
