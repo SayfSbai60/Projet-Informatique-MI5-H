@@ -67,7 +67,7 @@ Combattant* charger_combattants(unsigned int* nb_combattants) {
         Combattant* c = &liste[*nb_combattants];
 
         int lus = sscanf(ligne,
-            "%*d;%49[^;];%d;%d;%d;%d;%d;%49[^;];%99[^;];%d;%d;%d;%9[^;];"
+            "%49[^;];%d;%d;%d;%d;%d;%49[^;];%99[^;];%d;%d;%d;%9[^;];"
             "%49[^;];%99[^;];%d;%d;%d;%9[^;];"
             "%49[^;];%99[^;];%d;%d;%d;%9[^\n]",
             c->nom,
@@ -80,7 +80,7 @@ Combattant* charger_combattants(unsigned int* nb_combattants) {
             &c->spe_agilite.duree, &c->spe_agilite.rechargement, c->spe_agilite.type_cible
         );
 
-        if (lus == 25) {
+        if (lus == 24) {
             // Réinitialisation des états
             c->cooldown_attaque = c->cooldown_defense = c->cooldown_agilite = 0;
             c->effets.attaque_boost = c->effets.defense_boost = c->effets.agilite_boost = 0;
