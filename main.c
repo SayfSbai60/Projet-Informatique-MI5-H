@@ -46,6 +46,9 @@ typedef struct {
     Combattant* fighter_3;
 } Equipe;
 
+#define MAX_LIGNE 512
+#define MAX_COMBATTANTS 20
+
 Combattant* charger_combattants(unsigned int* nb_combattants) {
     FILE* fichier = fopen("combattants.txt", "r");
     if (!fichier) {
@@ -95,6 +98,7 @@ Combattant* charger_combattants(unsigned int* nb_combattants) {
     return liste;
 }
 
+
 void appliquer_effets(Combattant* c) {
     if (c->effets.tours_restants > 0) {
         c->effets.tours_restants--;
@@ -127,11 +131,15 @@ Combattant* choisir_combattant_actif(Equipe* equipe) {
     if (equipe->fighter_3->pv > 0) printf("3. %s\n", equipe->fighter_3->nom);
     
     int choix;
+    char input[10];
     do {
         printf("Choisissez un combattant (1-3): ");
-        if (scanf("%d", &choix) != 1) {
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("Erreur de lecture.\n");
+            continue;
+        }
+        if (sscanf(input, "%d", &choix) != 1) {
             printf("Entree invalide! Veuillez entrer un nombre.\n");
-            while(getchar() != '\n');
             continue;
         }
     } while (choix < 1 || choix > 3 || 
@@ -154,9 +162,17 @@ Combattant* choisir_cible(Equipe* equipe, const char* type) {
     if (equipe->fighter_3->pv > 0) printf("3. %s (PV: %d)\n", equipe->fighter_3->nom, equipe->fighter_3->pv);
     
     int choix;
+    char input[10];
     do {
         printf("Choisissez une cible (1-3): ");
-        scanf("%d", &choix);
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("Erreur de lecture.\n");
+            continue;
+        }
+        if (sscanf(input, "%d", &choix) != 1) {
+            printf("Entree invalide! Veuillez entrer un nombre.\n");
+            continue;
+        }
     } while (choix < 1 || choix > 3 || 
              (choix == 1 && equipe->fighter_1->pv <= 0) ||
              (choix == 2 && equipe->fighter_2->pv <= 0) ||
@@ -320,9 +336,17 @@ void jouer_tour(Equipe* equipe_actuelle, Equipe* equipe_adverse) {
     printf("\n");
     
     int choix_action;
+    char input[10];
     do {
         printf("Choisissez une action (1-4): ");
-        scanf("%d", &choix_action);
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("Erreur de lecture.\n");
+            continue;
+        }
+        if (sscanf(input, "%d", &choix_action) != 1) {
+            printf("Entree invalide! Veuillez entrer un nombre.\n");
+            continue;
+        }
     } while (choix_action < 1 || choix_action > 4);
     
     switch (choix_action) {
@@ -452,19 +476,21 @@ void afficher_liste_combattants(Combattant* liste, int nb) {
 }
 
 Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
-     Equipe e;
+    Equipe e;
     int choix;
+    char input[10];
     int combattants_choisis[3] = {0};
 
     printf("\n=== CREATION EQUIPE %d ===\n", num_equipe);
     
     printf("Nom de l'equipe: ");
-    scanf(" %99[^\n]", e.Nom_equipe);
-    while(getchar() != '\n');
+    if (fgets(e.Nom_equipe, sizeof(e.Nom_equipe), stdin) == NULL) {
+        strcpy(e.Nom_equipe, "Equipe sans nom");
+    }
+    e.Nom_equipe[strcspn(e.Nom_equipe, "\n")] = '\0';
 
     afficher_liste_combattants(liste, nb_combattants);
 
-    // Allouer de la mémoire pour les combattants de l'équipe
     e.fighter_1 = malloc(sizeof(Combattant));
     e.fighter_2 = malloc(sizeof(Combattant));
     e.fighter_3 = malloc(sizeof(Combattant));
@@ -472,10 +498,12 @@ Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
     for (int i = 0; i < 3; i++) {
         do {
             printf("\nChoix du combattant %d (1-%d): ", i + 1, nb_combattants);
-            
-            if (scanf("%d", &choix) != 1) {
+            if (fgets(input, sizeof(input), stdin) == NULL) {
+                printf("Erreur de lecture.\n");
+                continue;
+            }
+            if (sscanf(input, "%d", &choix) != 1) {
                 printf("Entree invalide! Veuillez entrer un nombre.\n");
-                while(getchar() != '\n');
                 continue;
             }
 
@@ -500,7 +528,6 @@ Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
             }
         } while (1);
 
-        // Copier le combattant choisi dans l'équipe
         switch (i) {
             case 0: *e.fighter_1 = liste[choix - 1]; break;
             case 1: *e.fighter_2 = liste[choix - 1]; break;
@@ -588,13 +615,21 @@ void menu_pvp() {
 
 int choisir_difficulte() {
     int choix;
+    char input[10];
     do {
         printf("\nChoisissez la difficulte:\n");
         printf("1. Noob (facile)\n");
         printf("2. Facile\n");
         printf("3. Moyen\n");
         printf("Choix: ");
-        scanf("%d", &choix);
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("Erreur de lecture.\n");
+            continue;
+        }
+        if (sscanf(input, "%d", &choix) != 1) {
+            printf("Entree invalide! Veuillez entrer un nombre.\n");
+            continue;
+        }
     } while (choix < 1 || choix > 3);
     return choix;
 }
@@ -738,8 +773,9 @@ void menu_pve() {
     combat_autonome(equipe_joueur, equipe_ia, difficulte);
 }
 
-void menu_principal(){
+void menu_principal() {
     int choix;
+    char input[10];
     do {
         printf("\n=== ONE PIECE FIGHT ===\n");
         printf("1. Mode PvP\n");
@@ -747,9 +783,12 @@ void menu_principal(){
         printf("3. Quitter\n");
         printf("Choix: ");
         
-        if (scanf("%d", &choix) != 1) {
-            printf("Entree invalide!\n");
-            while(getchar() != '\n');
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("Erreur de lecture.\n");
+            continue;
+        }
+        if (sscanf(input, "%d", &choix) != 1) {
+            printf("Entree invalide! Veuillez entrer un nombre entre 1 et 3.\n");
             continue;
         }
 
@@ -760,8 +799,8 @@ void menu_principal(){
             default: printf("Choix invalide!\n");
         }
     } while (1);
-
 }
+
 int main(){
     menu_principal();
     return 0;
