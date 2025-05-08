@@ -47,7 +47,7 @@ typedef struct {
 } Equipe;
 
 Combattant* charger_combattants(unsigned int* nb_combattants) {
-    FILE* fichier = fopen("combattants.txt", "r");
+    FILE* fichier = fopen("fichiers_combattants.txt", "r");
     if (!fichier) {
         perror("Erreur ouverture fichier");
         exit(EXIT_FAILURE);
