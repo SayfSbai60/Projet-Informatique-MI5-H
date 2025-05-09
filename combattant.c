@@ -1,10 +1,6 @@
 #include "combattant.h"
 #include "utils.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <stdbool.h>
+
 
 
 
@@ -261,18 +257,7 @@ Combattant* choisir_combattant_actif(Equipe* equipe) {
         default: return NULL;
     }
 }
-Combattant* choisir_combattant_autonome(Equipe* equipe) {
-    Combattant* meilleur = NULL;
-    for (int i = 0; i < 3; i++) {
-        Combattant* c = (i == 0) ? equipe->fighter_1 : 
-                       (i == 1) ? equipe->fighter_2 : 
-                       equipe->fighter_3;
-        if (c->pv > 0 && (!meilleur || c->pv > meilleur->pv)) {
-            meilleur = c;
-        }
-    }
-    return meilleur;
-}
+
 Combattant* choisir_cible(Equipe* equipe, const char* type) {
     printf("\nCibles %s disponibles:\n", type);
     if (equipe->fighter_1->pv > 0) printf("1. %s (PV: %d)\n", equipe->fighter_1->nom, equipe->fighter_1->pv);
@@ -302,21 +287,4 @@ Combattant* choisir_cible(Equipe* equipe, const char* type) {
         case 3: return equipe->fighter_3;
         default: return NULL;
     }
-}
-Combattant* choisir_cible_autonome(Equipe* equipe, const char* type, int difficulte) {
-    Combattant* cible = NULL;
-    for (int i = 0; i < 3; i++) {
-        Combattant* c = (i == 0) ? equipe->fighter_1 : 
-                       (i == 1) ? equipe->fighter_2 : 
-                       equipe->fighter_3;
-        if (c->pv > 0) {
-            if (difficulte == 1) { // NOOB : aléatoire
-                if (rand() % 3 == 0) return c;
-            }
-            if (!cible || c->pv < cible->pv) { // FACILE/MOYEN : plus faible
-                cible = c;
-            }
-        }
-    }
-    return cible;
 }
