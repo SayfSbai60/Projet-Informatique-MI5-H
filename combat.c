@@ -1,12 +1,9 @@
 #include "combat.h"
 #include "combattant.h"
 #include "utils.h"
+#include "menu.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <stdbool.h>
+
 
 void jouer_tour(Equipe* equipe_actuelle, Equipe* equipe_adverse) {
     Combattant* combattant_actuel = choisir_combattant_actif(equipe_actuelle);
@@ -200,112 +197,6 @@ int verifier_equipe_ko(Equipe e) {
     return (e.fighter_1->pv <= 0 && e.fighter_2->pv <= 0 && e.fighter_3->pv <= 0);
 }
 
-
-void jouer_ia_autonome(Equipe* equipe_ia, Equipe* equipe_joueur, int difficulte){
-    Combattant* actif = choisir_combattant_autonome(equipe_ia);
-    if (!actif) return;
-
-    printf("\nIA (%s) utilise %s:\n", 
-           (difficulte == 1) ? "NOOB" : (difficulte == 2) ? "FACILE" : "MOYEN",
-           actif->nom);
-
-    // NOOB : seulement attaque de base aléatoire
-    if (difficulte == 1) {
-        ia_attaque_de_base(actif, equipe_joueur);  // <-- Utilisation de la version IA
-        return;
-    }
-
-    // FACILE/MOYEN : logique optimisée
-    TechniqueSpeciale* tech = NULL;
-    Combattant* cible = NULL;
-
-    // 1. Priorité aux attaques spéciales si disponibles
-    if (actif->cooldown_attaque == 0) {
-        tech = &actif->spe_attaque;
-        cible = choisir_cible_autonome(equipe_joueur, "ennemi", difficulte);
-    } 
-    // 2. Soins/protections sur alliés faibles
-    else if (actif->cooldown_defense == 0 && 
-             (strstr(actif->spe_defense.description, "Soin") || 
-              strstr(actif->spe_defense.description, "Protection"))) {
-        tech = &actif->spe_defense;
-        cible = choisir_cible_autonome(equipe_ia, "allie", difficulte);
-    }
-    // 3. Buffs d'agilité
-    else if (actif->cooldown_agilite == 0) {
-        tech = &actif->spe_agilite;
-        cible = choisir_cible_autonome(equipe_ia, "allie", difficulte);
-    }
-
-    // Application de l'action choisie
-    if (tech && cible) {
-        ia_appliquer_technique(actif, tech, cible);  // <-- Utilisation de la version IA
-        if (tech == &actif->spe_attaque) actif->cooldown_attaque = tech->rechargement;
-        else if (tech == &actif->spe_defense) actif->cooldown_defense = tech->rechargement;
-        else if (tech == &actif->spe_agilite) actif->cooldown_agilite = tech->rechargement;
-    } else {
-        // Fallback : attaque de base
-        ia_attaque_de_base(actif, equipe_joueur);  // <-- Utilisation de la version IA
-    }
-
-    appliquer_effets(actif);
-    diminuer_cooldowns(actif);
-}
-
-void ia_attaque_de_base(Combattant* attaquant, Equipe* equipe_adverse) {
-    Combattant* cible = choisir_cible_autonome(equipe_adverse, "ennemi", 2); // Mode FACILE par défaut
-    int degats = attaquant->attaque - (cible->defense / 2);
-    if (degats < 1) degats = 1;
-    
-    cible->pv -= degats;
-    printf("%s attaque %s (%d PV restants)\n", attaquant->nom, cible->nom, cible->pv);
-}
-
-void ia_appliquer_technique(Combattant* utilisateur, TechniqueSpeciale* tech, Combattant* cible) {
-    printf("%s utilise %s sur %s\n", utilisateur->nom, tech->nom, cible->nom);
-    
-    if (strstr(tech->description, "Soin") || strstr(tech->description, "soin")) {
-        cible->pv = (cible->pv + tech->valeur > cible->pv_max) ? cible->pv_max : cible->pv + tech->valeur;
-    } 
-    else if (strcmp(tech->type_cible, "ennemi") == 0) {
-        cible->pv -= tech->valeur;
-        if (cible->pv < 0) cible->pv = 0;
-    } 
-    else { // Buffs
-        if (strstr(tech->description, "attaque")) cible->attaque += tech->valeur;
-        if (strstr(tech->description, "defense")) cible->defense += tech->valeur;
-        if (strstr(tech->description, "agilite")) cible->agilite += tech->valeur;
-    }
-}
-
-int choisir_difficulte() {
-    const int largeur = 50;
-    int choix;
-    char input[10];
-    
-    do {
-        printf("\n");
-        afficher_separateur(largeur);
-        printf("| %-48s |\n", "CHOIX DE LA DIFFICULTE");
-        afficher_separateur(largeur);
-        printf("| %-48s |\n", "1. Noob (facile)");
-        printf("| %-48s |\n", "2. Facile");
-        printf("| %-48s |\n", "3. Moyen");
-        afficher_separateur(largeur);
-        printf("| Choix: %-40s |\n", "");
-        
-        // Positionnement curseur
-        printf("\033[A\033[9C");
-        
-        if (fgets(input, sizeof(input), stdin) && sscanf(input, "%d", &choix) == 1) {
-            if (choix >= 1 && choix <= 3) break;
-        }
-        printf("Choix invalide! (1-3)\n");
-    } while (1);
-    
-    return choix;
-}
-
 void combat_pvp(Equipe equipe1, Equipe equipe2) {
     printf("\nLe combat commence!\n");
     srand(time(NULL));
@@ -326,6 +217,7 @@ void combat_pvp(Equipe equipe1, Equipe equipe2) {
         
         equipe2_ko = verifier_equipe_ko(equipe2);
         if (equipe2_ko) break;
+        afficher_combat(equipe1, equipe2);
         
         printf("\n--- Tour de l'equipe %s ---\n", equipe2.Nom_equipe);
         jouer_tour(&equipe2, &equipe1);
@@ -343,23 +235,96 @@ void combat_pvp(Equipe equipe1, Equipe equipe2) {
     liberer_equipe(equipe2);
 }
 
-void combat_autonome(Equipe equipe_joueur, Equipe equipe_ia, int difficulte) {
-    int tour = 1;
-    while (!verifier_equipe_ko(equipe_joueur) && !verifier_equipe_ko(equipe_ia)) {
-        printf("\n=== TOUR %d ===\n", tour++);
-        afficher_combat(equipe_joueur, equipe_ia);
 
-        // Tour joueur (manuel)
-        printf("\n--- VOTRE TOUR ---\n");
-        jouer_tour(&equipe_joueur, &equipe_ia);
-        if (verifier_equipe_ko(equipe_ia)) break;
+void attaque_de_base_pnj(Combattant* attaquant, Equipe* equipe_adverse) {
+   
+    Combattant* cible = NULL;
+    do {
+        switch(rand() % 3) {
+            case 0: cible = equipe_adverse->fighter_1; break;
+            case 1: cible = equipe_adverse->fighter_2; break;
+            case 2: cible = equipe_adverse->fighter_3; break;
+        }
+    } while (cible == NULL || cible->pv <= 0);
 
-        // Tour IA (100% autonome)
-        printf("\n--- TOUR IA ---\n");
-        jouer_ia_autonome(&equipe_ia, &equipe_joueur, difficulte);
+    
+    int chance_esquive = 10 + (cible->agilite - attaquant->agilite);
+    if (rand() % 100 < chance_esquive) {
+        printf("%s esquive l'attaque de %s (Chance: %d%%)!\n", 
+              cible->nom, attaquant->nom, chance_esquive);
+        return;
     }
 
-    printf(verifier_equipe_ko(equipe_joueur) ? "\nL'IA a gagne!\n" : "\nVous avez gagne!\n");
+    float reduction = (float)cible->defense / (cible->defense + 100);
+    int degats = attaquant->attaque * (1 - reduction);
+    if (degats < 1) degats = 1;
+
+   
+    cible->pv -= degats;
+    printf("%s attaque %s et inflige %d degats! (Reduction: %.0f%%)\n",
+          attaquant->nom, cible->nom, degats, reduction*100);
+
+    if (cible->pv <= 0) {
+        cible->pv = 0;
+        printf("%s est K.O.!\n", cible->nom);
+    }
+}
+
+void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_ia) {
+    int tour = 1;
+    const int MAX_TOURS = 100;
+
+    printf("\n=== MODE PVE ===\n");
+    
+    while (!verifier_equipe_ko(equipe_joueur) && !verifier_equipe_ko(equipe_ia) && tour <= MAX_TOURS) {
+        printf("\n--- TOUR %d ---\n", tour++);
+        afficher_combat(equipe_joueur, equipe_ia);
+
+        // Tour du joueur
+        if (!verifier_equipe_ko(equipe_ia)) {
+            printf("\n[VOTRE TOUR]\n");
+            jouer_tour(&equipe_joueur, &equipe_ia);
+            
+            // Vérifier si l'IA est K.O. après le tour du joueur
+            if (verifier_equipe_ko(equipe_ia)) {
+                break; // Sortir de la boucle si l'IA est K.O.
+            }
+        }
+
+        // Tour de l'IA
+        if (!verifier_equipe_ko(equipe_joueur)) {
+            printf("\n[TOUR IA AUTONOME]\n");
+            
+            Combattant* attaquant_ia = NULL;
+            do {
+                switch(rand() % 3) {
+                    case 0: attaquant_ia = equipe_ia.fighter_1; break;
+                    case 1: attaquant_ia = equipe_ia.fighter_2; break;
+                    case 2: attaquant_ia = equipe_ia.fighter_3; break;
+                }
+            } while (attaquant_ia == NULL || attaquant_ia->pv <= 0);
+
+            attaque_de_base_pnj(attaquant_ia, &equipe_joueur);
+            
+            // Vérifier si le joueur est K.O. après le tour de l'IA
+            if (verifier_equipe_ko(equipe_joueur)) {
+                break; // Sortir de la boucle si le joueur est K.O.
+            }
+        }
+    }
+    
+    // Résultat du combat
+    if(verifier_equipe_ko(equipe_joueur)) {
+        printf("L'ennemie a gagne !\n");
+    }
+    else if(verifier_equipe_ko(equipe_ia)) {
+        printf("Vous avez gagne !\n");
+    }
+    else if(tour > MAX_TOURS) {
+        printf("Egalite, nombre de tour maximum atteint !\n");
+    }
+    
     liberer_equipe(equipe_joueur);
     liberer_equipe(equipe_ia);
+    menu_principal();
 }
