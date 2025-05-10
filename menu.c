@@ -52,7 +52,7 @@ void menu_pve() {
     printf("| %-58s |\n", "MODE PVE");
     afficher_separateur(largeur);
     
-    int difficulte = choisir_difficulte();
+    
     
     printf("\n");
     afficher_separateur(largeur);
@@ -93,10 +93,10 @@ void menu_pve() {
         *(i == 0 ? equipe_ia.fighter_1 : i == 1 ? equipe_ia.fighter_2 : equipe_ia.fighter_3) = liste[index];
     }
 
-    printf("\n=== ÉQUIPE IA GENEREE AUTOMATIQUEMENT ===\n");
+    printf("\n=== ÉQUIPE ENNEMIE ===\n");
     afficher_equipe(equipe_ia);
     
-    combat_autonome(equipe_joueur, equipe_ia, difficulte);
+    combat_pve_simple(equipe_joueur, equipe_ia);
     free(liste);
 }
 
@@ -111,7 +111,7 @@ void menu_principal(){
         printf("| %-38s |\n", "ONE PIECE FIGHT");
         afficher_separateur(largeur);
         printf("| %-38s |\n", "1. Mode PvP (Joueur vs Joueur)");
-        printf("| %-38s |\n", "2. Mode PvE (Joueur vs IA)");
+        printf("| %-38s |\n", "2. Mode PvE (Joueur vs Bot)");
         printf("| %-38s |\n", "3. Quitter");
         afficher_separateur(largeur);
         printf("| Choix: %-30s |\n", "");
