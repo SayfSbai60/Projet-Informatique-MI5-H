@@ -46,6 +46,8 @@ typedef struct {
 
 Combattant* charger_combattants(unsigned int* nb_combattants);
 Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe);
+Combattant* trouver_combattant_faible(Equipe* equipe);
+Combattant* choisir_combattant_aleatoire(Equipe* equipe);
 void afficher_equipe(Equipe e);
 void afficher_liste_combattants(Combattant* liste, int nb);
 void afficher_details_combattant(Combattant c);
