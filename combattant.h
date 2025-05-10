@@ -55,6 +55,5 @@ void liberer_equipe(Equipe e);
 Combattant* choisir_combattant_actif(Equipe* equipe);
 Combattant* choisir_cible(Equipe* equipe, const char* type);
 
-
 #endif
 
