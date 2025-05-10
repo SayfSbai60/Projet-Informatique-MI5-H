@@ -270,7 +270,60 @@ void attaque_de_base_pnj(Combattant* attaquant, Equipe* equipe_adverse) {
     }
 }
 
-void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_ia, int difficulte) {
+void ordi_hard(Equipe* equipe_ordi, Equipe* equipe_joueur) {
+    Combattant* attaquant = choisir_combattant_aleatoire(equipe_ordi);
+    if (!attaquant) return;
+
+    // 2. Trouver les cibles
+    Combattant* cible_enemie = trouver_combattant_faible(equipe_joueur);
+    Combattant* cible_allie = trouver_combattant_faible(equipe_ordi);
+
+    if (!cible_enemie) return;
+
+    // 3. Priorité des actions
+    int action_effectuee = 0;
+
+    // Attaque spéciale d'attaque (priorité 1)
+    if (attaquant->cooldown_attaque == 0) {
+        int degats = attaquant->spe_attaque.valeur - (cible_enemie->defense / 2);
+        if (degats < 1) degats = 1;
+        cible_enemie->pv -= degats;
+        if (cible_enemie->pv < 0) cible_enemie->pv = 0;
+        
+        attaquant->cooldown_attaque = attaquant->spe_attaque.rechargement;
+        printf("%s utilise %s sur %s et inflige %d degats!\n",
+               attaquant->nom, attaquant->spe_attaque.nom, cible_enemie->nom, degats);
+        action_effectuee = 1;
+    }
+    // Attaque spéciale de défense (priorité 2)
+    else if (attaquant->cooldown_defense == 0 && cible_allie) {
+        appliquer_effets(cible_allie);
+        attaquant->cooldown_defense = attaquant->spe_defense.rechargement;
+        printf("%s utilise %s sur %s et boost sa defense!\n",
+               attaquant->nom, attaquant->spe_defense.nom, cible_allie->nom);
+        action_effectuee = 1;
+    }
+    // Attaque spéciale d'agilité (priorité 3)
+    else if (attaquant->cooldown_agilite == 0 && cible_allie) {
+        appliquer_effets(cible_allie);
+        attaquant->cooldown_agilite = attaquant->spe_agilite.rechargement;
+        printf("%s utilise %s sur %s et boost son agilite!\n",
+               attaquant->nom, attaquant->spe_agilite.nom, cible_allie->nom);
+        action_effectuee = 1;
+    }
+
+    // Attaque normale (si aucune compétence disponible)
+    if (!action_effectuee) {
+        attaque_de_base_pnj(attaquant, equipe_joueur);
+        return;
+    }
+
+    // 4. Appliquer les effets et réduire les cooldowns
+    appliquer_effets(attaquant);
+    diminuer_cooldowns(attaquant);
+}
+
+void combat_pve(Equipe equipe_joueur, Equipe equipe_ia, int difficulte) {
     int tour = 1;
     const int MAX_TOURS = 100;
 
@@ -298,11 +351,18 @@ void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_ia, int difficulte) {
             Combattant* cible = NULL;
             if (difficulte == 1) { // Noob - cible aléatoire
                 cible = choisir_combattant_aleatoire(&equipe_joueur);
-            } else { // Facile - cible la plus faible
-                cible = trouver_combattant_faible(&equipe_joueur);
+                attaque_de_base_pnj(attaquant_ia, &equipe_joueur);
+            } else if(difficulte==3){
+            ordi_hard(&equipe_ia,&equipe_joueur);
             }
             
-            attaque_de_base_pnj(attaquant_ia, &equipe_joueur);
+            
+            else { // Facile - cible la plus faible
+                cible = trouver_combattant_faible(&equipe_joueur);
+                attaque_de_base_pnj(attaquant_ia, &equipe_joueur);
+            }
+            
+            
             
             if (verifier_equipe_ko(equipe_joueur)) break;
         }
