@@ -10,13 +10,7 @@ void attaque_de_base(Combattant* attaquant, Equipe* equipe_adverse);
 void appliquer_effets(Combattant* c);
 void diminuer_cooldowns(Combattant* c);
 int verifier_equipe_ko(Equipe e);
-
-// PvP / PvE
-void ia_attaque_de_base(Combattant* attaquant, Equipe* equipe_adverse);
-void ia_appliquer_technique(Combattant* utilisateur, TechniqueSpeciale* tech, Combattant* cible);
-void jouer_ia_autonome(Equipe* equipe_ia, Equipe* equipe_joueur, int difficulte);
 void combat_pvp(Equipe equipe1, Equipe equipe2);
-void combat_autonome(Equipe equipe_joueur, Equipe equipe_ia, int difficulte);
 void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_pnj);
 void attaque_de_base_pnj(Combattant* attaquant, Equipe* equipe_adverse);
 
