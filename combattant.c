@@ -140,13 +140,8 @@ void afficher_liste_combattants(Combattant* liste, int nb) {
     afficher_separateur(largeur);
     
     for (int i = 0; i < nb; i++) {
-        printf("| %2d. %-20s PV: %4d Att: %3d Def: %3d Agi: %3d |\n",
-               i+1, liste[i].nom, liste[i].pv, 
-               liste[i].attaque, liste[i].defense, liste[i].agilite);
-        
-        if ((i+1) % 5 == 0 || i == nb-1) {
-            afficher_separateur(largeur);
-        }
+        printf("%d-",i);
+       afficher_details_combattant(liste[i]);
     }
 }
 
