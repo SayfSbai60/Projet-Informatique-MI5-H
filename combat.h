@@ -11,7 +11,8 @@ void appliquer_effets(Combattant* c);
 void diminuer_cooldowns(Combattant* c);
 int verifier_equipe_ko(Equipe e);
 void combat_pvp(Equipe equipe1, Equipe equipe2);
-void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_ia, int difficulte);
+void combat_pve(Equipe equipe_joueur, Equipe equipe_ia, int difficulte);
 void attaque_de_base_pnj(Combattant* attaquant, Equipe* equipe_adverse);
+void ordi_hard(Equipe* equipe_ordi, Equipe* equipe_joueur);
 
 #endif
