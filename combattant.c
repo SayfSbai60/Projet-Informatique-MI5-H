@@ -126,6 +126,40 @@ Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
     return e;
 }
 
+Combattant* trouver_combattant_faible(Equipe* equipe) {
+    Combattant* plus_faible = NULL;
+    int min_pv = 9999; // Initialisé à une valeur haute
+
+    if (equipe->fighter_1->pv > 0 && equipe->fighter_1->pv < min_pv) {
+        plus_faible = equipe->fighter_1;
+        min_pv = equipe->fighter_1->pv;
+    }
+    if (equipe->fighter_2->pv > 0 && equipe->fighter_2->pv < min_pv) {
+        plus_faible = equipe->fighter_2;
+        min_pv = equipe->fighter_2->pv;
+    }
+    if (equipe->fighter_3->pv > 0 && equipe->fighter_3->pv < min_pv) {
+        plus_faible = equipe->fighter_3;
+        min_pv = equipe->fighter_3->pv;
+    }
+
+    return plus_faible;
+}
+
+Combattant* choisir_combattant_aleatoire(Equipe* equipe) {
+    Combattant* disponibles[3];
+    int nb_disponibles = 0;
+
+    if (equipe->fighter_1->pv > 0) disponibles[nb_disponibles++] = equipe->fighter_1;
+    if (equipe->fighter_2->pv > 0) disponibles[nb_disponibles++] = equipe->fighter_2;
+    if (equipe->fighter_3->pv > 0) disponibles[nb_disponibles++] = equipe->fighter_3;
+
+    if (nb_disponibles == 0) return NULL;
+
+    int choix = rand() % nb_disponibles;
+    return disponibles[choix];
+}
+
 
 void afficher_liste_combattants(Combattant* liste, int nb) {
     const int largeur = 80;
@@ -279,3 +313,4 @@ Combattant* choisir_cible(Equipe* equipe, const char* type) {
         default: return NULL;
     }
 }
+
