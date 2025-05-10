@@ -136,7 +136,7 @@ void afficher_liste_combattants(Combattant* liste, int nb) {
     afficher_separateur(largeur);
     
     for (int i = 0; i < nb; i++) {
-        printf("%d-",i);
+        printf("%d-",i+1);
        afficher_details_combattant(liste[i]);
     }
 }
