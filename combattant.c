@@ -1,10 +1,6 @@
 #include "combattant.h"
 #include "utils.h"
 
-
-
-
-
 Combattant* charger_combattants(unsigned int* nb_combattants) {
     FILE* fichier = fopen("fichiers_combattants.txt", "r");
     if (!fichier) {
