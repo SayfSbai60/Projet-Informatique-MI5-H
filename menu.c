@@ -55,8 +55,9 @@ void menu_pve() {
     
     // Choix de la difficulté
     printf("| %-58s |\n", "Choisissez la difficulte:");
-    printf("| %-58s |\n", "1. Noob (attaque aleatoire)");
-    printf("| %-58s |\n", "2. Facile (cible le plus faible)");
+    printf("| %-58s |\n", "1. Noob ");
+    printf("| %-58s |\n", "2. Facile");
+    printf("| %-58s |\n", "3. moyen");
     afficher_separateur(largeur);
     
     char input[10];
@@ -65,10 +66,10 @@ void menu_pve() {
     printf("Entrez le choix de la difficulté = ");
     result = scanf("%d", &difficulte);
     while (getchar() != '\n');  // Vide le buffer d’entrée
-    if (result != 1 || difficulte < 1 || difficulte > 2) {
-        printf("Entrée invalide. Veuillez entrer 1 ou 2.\n");
+    if (result != 1 || difficulte < 1 || difficulte > 3) {
+        printf("Entrée invalide. Veuillez entrer 1,2 ou 3.\n");
     }
-   } while (result != 1 || difficulte < 1 || difficulte > 2);
+   } while (result != 1 || difficulte < 1 || difficulte > 3);
     
     printf("\n");
     afficher_separateur(largeur);
@@ -112,7 +113,7 @@ void menu_pve() {
     afficher_equipe(equipe_ia);
     
     // Lancer le combat avec la difficulté choisie
-    combat_pve_simple(equipe_joueur, equipe_ia, difficulte);
+    combat_pve(equipe_joueur, equipe_ia, difficulte);
     free(liste);
     free(equipe_joueur.fighter_1);
     free(equipe_joueur.fighter_2);
