@@ -293,7 +293,7 @@ void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_ia) {
 
         // Tour de l'IA
         if (!verifier_equipe_ko(equipe_joueur)) {
-            printf("\n[TOUR IA AUTONOME]\n");
+            printf("\n[TOUR ENNEMIE]\n");
             
             Combattant* attaquant_ia = NULL;
             do {
