@@ -270,11 +270,12 @@ void attaque_de_base_pnj(Combattant* attaquant, Equipe* equipe_adverse) {
     }
 }
 
-void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_ia) {
+void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_ia, int difficulte) {
     int tour = 1;
     const int MAX_TOURS = 100;
 
     printf("\n=== MODE PVE ===\n");
+    printf("Difficulte: %s\n", difficulte == 1 ? "Noob" : "Facile");
     
     while (!verifier_equipe_ko(equipe_joueur) && !verifier_equipe_ko(equipe_ia) && tour <= MAX_TOURS) {
         printf("\n--- TOUR %d ---\n", tour++);
@@ -284,32 +285,26 @@ void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_ia) {
         if (!verifier_equipe_ko(equipe_ia)) {
             printf("\n[VOTRE TOUR]\n");
             jouer_tour(&equipe_joueur, &equipe_ia);
-            
-            // Vérifier si l'IA est K.O. après le tour du joueur
-            if (verifier_equipe_ko(equipe_ia)) {
-                break; // Sortir de la boucle si l'IA est K.O.
-            }
+            if (verifier_equipe_ko(equipe_ia)) break;
         }
 
         // Tour de l'IA
         if (!verifier_equipe_ko(equipe_joueur)) {
             printf("\n[TOUR ENNEMIE]\n");
             
-            Combattant* attaquant_ia = NULL;
-            do {
-                switch(rand() % 3) {
-                    case 0: attaquant_ia = equipe_ia.fighter_1; break;
-                    case 1: attaquant_ia = equipe_ia.fighter_2; break;
-                    case 2: attaquant_ia = equipe_ia.fighter_3; break;
-                }
-            } while (attaquant_ia == NULL || attaquant_ia->pv <= 0);
-
+            Combattant* attaquant_ia = choisir_combattant_aleatoire(&equipe_ia);
+            if (!attaquant_ia) continue;
+            
+            Combattant* cible = NULL;
+            if (difficulte == 1) { // Noob - cible aléatoire
+                cible = choisir_combattant_aleatoire(&equipe_joueur);
+            } else { // Facile - cible la plus faible
+                cible = trouver_combattant_faible(&equipe_joueur);
+            }
+            
             attaque_de_base_pnj(attaquant_ia, &equipe_joueur);
             
-            // Vérifier si le joueur est K.O. après le tour de l'IA
-            if (verifier_equipe_ko(equipe_joueur)) {
-                break; // Sortir de la boucle si le joueur est K.O.
-            }
+            if (verifier_equipe_ko(equipe_joueur)) break;
         }
     }
     
@@ -328,3 +323,4 @@ void combat_pve_simple(Equipe equipe_joueur, Equipe equipe_ia) {
     liberer_equipe(equipe_ia);
     menu_principal();
 }
+
