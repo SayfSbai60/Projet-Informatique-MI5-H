@@ -1,20 +1,21 @@
-Luffy;150;150;30;20;80;Gomu Gomu no Pistol;Coup de poing élastique;40;1;2;ennemi;Haki du Roi;Renforce la defense avec haki;25;3;4;soi;Gear Second;Augmente la vitesse;30;2;3;soi
-Zoro;140;140;35;25;70;Santoryu Ougi;Coup triple épée;45;1;3;ennemi;Pari de Zoro;Absorbe les dégâts;30;2;4;soi;Ittoryu Iai;Frappe ultra-rapide;25;1;2;soi
-Sanji;130;130;30;20;75;Diable Jambe;Coup de pied enflammé;35;1;2;ennemi;Manteau Noir;Contre-attaque;20;2;3;soi;Sky Walk;Esquive aérienne;30;2;3;soi
-Barbe Noire;160;160;40;30;60;Yami Yami no Mi;Absorption des attaques;50;2;4;ennemi;Gura Gura no Mi;Contre les attaques;35;3;5;soi;Tenebre;Augmente la portée;20;1;2;soi
-Shanks;170;170;45;35;90;Haki du Conquérant;Attaque mentale;60;1;5;ennemi;Protection;Barrière de haki;40;3;4;soi;Présence;Intimidation rapide;35;2;3;soi
-Kaido;200;200;50;40;50;Boro Breath;Souffle de dragon;70;1;5;ennemi;Peau de dragon;Résistance extrême;50;4;6;soi;Transformation;Forme hybride;40;3;5;soi
-Roger;180;180;48;38;85;Pistole Divin;Coup suprême;65;1;4;ennemi;Volonté du Pirate;Endurance;45;3;5;soi;Course au Trésor;Déplacement instantané;50;2;4;soi
-Barbe Blanche;190;190;48;40;65;Gura Gura no Mi;Vibration destructrice;70;1;5;ennemi;Barrière;Protection anti-choc;50;3;5;soi;Choc;Onde de choc;30;1;3;ennemi
-Big Mom;180;180;42;38;55;Ikoku Sovereignty;Attaque homie;60;1;4;ennemi;Soul Solid;Défense spirituelle;45;3;5;soi;Promesse;Accélération homie;35;2;4;soi
-1Akainu;160;160;38;30;70;Meteor Volcano;Pluie de magma;55;1;4;ennemi;Magma Armor;Protection en magma;40;3;4;soi;Eruption;Projection rapide;30;1;3;ennemi
-Aokiji;150;150;35;28;75;Ice Age;Gel total;50;1;4;ennemi;Ice Ball;Prison de glace;35;2;4;soi;Ice Block;Patine glissante;40;2;3;soi
-Kizaru;155;155;37;29;95;Yasakani no Magatama;Laser rapide;45;1;3;ennemi;Light Mirror;Reflet lumineux;30;2;3;soi;Lightspeed;Déplacement photonique;60;1;2;soi
-1Garp;165;165;40;35;80;Galaxy Impact;Punch divin;60;1;4;ennemi;Haki du Héros;Défense légendaire;45;3;5;soi;Justice Charge;Charge foudroyante;50;2;4;soi
-1Doflamingo;145;145;33;27;65;Overheat;Fil coupant;40;1;3;ennemi;Birdcage;Cage protectrice;35;3;5;soi;Parasite;Contrôle rapide;30;2;4;ennemi
-Law;135;135;32;25;75;Room;Contrôle spatial;45;1;4;ennemi;Shambles;Échange de position;30;2;3;soi;Takt;Lévitation;40;1;3;soi
-Ener;140;140;36;22;100;El Thor;Foudre divine;50;1;3;ennemi;Mantra;Précognition;2;4;3;soi;Raigou;Déplacement foudre;70;1;2;soi
-Lucci;138;138;34;26;85;Rokuogan;Onde de choc;40;1;3;ennemi;Tekkai;Corps de fer;30;2;4;soi;Soru;Déplacement ultra-rapide;60;1;2;soi
-Crocodile;142;142;31;24;60;Desert Spada;Lame de sable;35;1;3;ennemi;Sables Mouvants;Défense sableuse;25;2;4;soi;Dessication;Assèchement;20;1;3;ennemi
-Mihawk;175;175;45;35;90;Yoru Slash;Coup d'épée suprême;65;1;4;ennemi;Œil de Faucon;Précision absolue;40;3;5;soi;Pursuit;Traque implacable;55;2;4;ennemi
-Nami;100;100;20;15;110;Thunderbolt Tempo;Tempête électrique;30;1;2;ennemi;Mirage;Leurres climatiques;20;2;3;soi;Climatact;Déplacement venteux;80;1;2;soi
+Luffy;150;150;30;20;40;Gomu Gomu no Pistol (attaque);Coup de poing élastique;40;1;2;ennemi;Haki du Roi (defense);Renforce la defense avec haki;25;3;4;soi;Gear Second (agilite);Augmente la vitesse;30;2;3;soi
+Zoro;140;140;35;25;40;Santoryu Ougi (attaque);Coup triple épée;45;1;3;ennemi;Pari de Zoro (defense);Absorbe les dégâts;30;2;4;soi;Ittoryu Iai (agilite);Frappe ultra-rapide;25;1;2;soi
+Sanji;130;130;30;20;50;Diable Jambe (attaque);Coup de pied enflammé;35;1;2;ennemi;Manteau Noir (defense);Contre-attaque;20;2;3;soi;Sky Walk (agilite);Esquive aérienne;30;2;3;soi
+Barbe Noire;160;160;40;30;20;Yami Yami no Mi (attaque);Absorption des attaques;50;2;4;ennemi;Gura Gura no Mi (defense);Contre les attaques;35;3;5;soi;Tenebre (agilite);Augmente la portée;20;1;2;soi
+Shanks;170;170;45;35;40;Haki du Conquérant (attaque);Attaque mentale;60;1;5;ennemi;Protection (defense);Barrière de haki;40;3;4;soi;Présence (agilite);Intimidation rapide;35;2;3;soi
+Kaido;200;200;50;40;40;Boro Breath (attaque);Souffle de dragon;70;1;5;ennemi;Peau de dragon (defense);Résistance extrême;50;4;6;soi;Transformation (agilite);Forme hybride;40;3;5;soi
+Roger;180;180;48;38;50;Pistole Divin (attaque);Coup suprême;65;1;4;ennemi;Volonté du Pirate (defense);Endurance;45;3;5;soi;Course au Trésor (agilite);Déplacement instantané;50;2;4;soi
+Barbe Blanche;190;190;48;40;30;Gura Gura no Mi (attaque);Vibration destructrice;70;1;5;ennemi;Barrière (defense);Protection anti-choc;50;3;5;soi;Choc (agilite);Onde de choc;30;1;3;ennemi
+Big Mom;180;180;42;38;20;Ikoku Sovereignty (attaque);Attaque homie;60;1;4;ennemi;Soul Solid (defense);Défense spirituelle;45;3;5;soi;Promesse (agilite);Accélération homie;35;2;4;soi
+Akainu;160;160;38;30;30;Meteor Volcano (attaque);Pluie de magma;55;1;4;ennemi;Magma Armor (defense);Protection en magma;40;3;4;soi;Eruption (agilite);Projection rapide;30;1;3;ennemi
+Aokiji;150;150;35;28;40;Ice Age (attaque);Gel total;50;1;4;ennemi;Ice Ball (defense);Prison de glace;35;2;4;soi;Ice Block (agilite);Patine glissante;40;2;3;soi
+Kizaru;155;155;37;29;60;Yasakani no Magatama (attaque);Laser rapide;45;1;3;ennemi;Light Mirror (defense);Reflet lumineux;30;2;3;soi;Lightspeed (agilite);Déplacement photonique;60;1;2;soi
+Garp;165;165;40;35;40;Galaxy Impact (attaque);Punch divin;60;1;4;ennemi;Haki du Héros (defense);Défense légendaire;45;3;5;soi;Justice Charge (agilite);Charge foudroyante;50;2;4;soi
+Doflamingo;145;145;33;27;30;Overheat (attaque);Fil coupant;40;1;3;ennemi;Birdcage (defense);Cage protectrice;35;3;5;soi;Parasite (agilite);Contrôle rapide;30;2;4;ennemi
+Law;135;135;32;25;50;Room (attaque);Contrôle spatial;45;1;4;ennemi;Shambles (defense);Échange de position;30;2;3;soi;Takt (agilite);Lévitation;40;1;3;soi
+Ener;140;140;36;22;55;El Thor (attaque);Foudre divine;50;1;3;ennemi;Mantra (defense);Précognition;2;4;3;soi;Raigou (agilite);Déplacement foudre;70;1;2;soi
+Lucci;138;138;34;26;50;Rokuogan (attaque);Onde de choc;40;1;3;ennemi;Tekkai (defense);Corps de fer;30;2;4;soi;Soru (agilite);Déplacement ultra-rapide;60;1;2;soi
+Crocodile;142;142;31;24;30;Desert Spada (attaque);Lame de sable;35;1;3;ennemi;Sables Mouvants (defense);Défense sableuse;25;2;4;soi;Dessication (agilite);Assèchement;20;1;3;ennemi
+Mihawk;175;175;45;35;55;Yoru Slash (attaque);Coup d'épée suprême;65;1;4;ennemi;Œil de Faucon (defense);Précision absolue;40;3;5;soi;Pursuit (agilite);Traque implacable;55;2;4;ennemi
+Nami;100;100;20;15;30;Thunderbolt Tempo (attaque);Tempête électrique;30;1;2;ennemi;Mirage (defense);Leurres climatiques;20;2;3;soi;Climatact (agilite);Déplacement venteux;80;1;2;soi
+
