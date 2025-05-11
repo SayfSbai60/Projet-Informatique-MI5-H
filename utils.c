@@ -41,37 +41,29 @@ void afficher_combat(Equipe e1, Equipe e2) {
     printf("| %-36s | %-36s |\n", e1.Nom_equipe, e2.Nom_equipe);
     afficher_separateur(largeur);
     
-    // En-têtes des stats
-    printf("|%-18s %3s %3s %3s %3s |%-18s %3s %3s %3s %3s |\n",
+    // En-têtes modifiés pour plus de clarté
+    printf("|%-18s %3s %4s %7s %7s |%-18s %3s %4s %7s %7s |\n",
            "Combattant", "PV", "Att", "Def", "Agi",
            "Combattant", "PV", "Att", "Def", "Agi");
     
-   
-    
-    // Format compact pour les combattants
-    printf("|1.%-16s %3d %3d %3d %3d |1.%-16s %3d %3d %3d %3d |\n",
-           e1.fighter_1->pv > 0 ? e1.fighter_1->nom : "[K.O.]", 
-           e1.fighter_1->pv, e1.fighter_1->attaque,
-           e1.fighter_1->defense, e1.fighter_1->agilite,
-           e2.fighter_1->pv > 0 ? e2.fighter_1->nom : "[K.O.]", 
-           e2.fighter_1->pv, e2.fighter_1->attaque,
-           e2.fighter_1->defense, e2.fighter_1->agilite);
-    
-    printf("|2.%-16s %3d %3d %3d %3d |2.%-16s %3d %3d %3d %3d |\n",
-           e1.fighter_2->pv > 0 ? e1.fighter_2->nom : "[K.O.]", 
-           e1.fighter_2->pv, e1.fighter_2->attaque,
-           e1.fighter_2->defense, e1.fighter_2->agilite,
-           e2.fighter_2->pv > 0 ? e2.fighter_2->nom : "[K.O.]", 
-           e2.fighter_2->pv, e2.fighter_2->attaque,
-           e2.fighter_2->defense, e2.fighter_2->agilite);
-    
-    printf("|3.%-16s %3d %3d %3d %3d |3.%-16s %3d %3d %3d %3d |\n",
-           e1.fighter_3->pv > 0 ? e1.fighter_3->nom : "[K.O.]", 
-           e1.fighter_3->pv, e1.fighter_3->attaque,
-           e1.fighter_3->defense, e1.fighter_3->agilite,
-           e2.fighter_3->pv > 0 ? e2.fighter_3->nom : "[K.O.]", 
-           e2.fighter_3->pv, e2.fighter_3->attaque,
-           e2.fighter_3->defense, e2.fighter_3->agilite);
-    
+    // Affiche chaque combattant avec base + bonus
+    for (int i = 0; i < 3; i++) {
+        Combattant* f1 = (i == 0) ? e1.fighter_1 : (i == 1) ? e1.fighter_2 : e1.fighter_3;
+        Combattant* f2 = (i == 0) ? e2.fighter_1 : (i == 1) ? e2.fighter_2 : e2.fighter_3;
+        
+        printf("|%d.%-16s %3d %4d %3d+%-3d %3d+%-3d |%d.%-16s %3d %4d %3d+%-3d %3d+%-3d |\n",
+               i+1, 
+               f1->pv > 0 ? f1->nom : "[K.O.]", 
+               f1->pv > 0 ? f1->pv : 0,
+               f1->attaque,
+               f1->defense - f1->effets.defense_boost, f1->effets.defense_boost,
+               f1->agilite - f1->effets.agilite_boost, f1->effets.agilite_boost,
+               i+1,
+               f2->pv > 0 ? f2->nom : "[K.O.]", 
+               f2->pv > 0 ? f2->pv : 0,
+               f2->attaque,
+               f2->defense - f2->effets.defense_boost, f2->effets.defense_boost,
+               f2->agilite - f2->effets.agilite_boost, f2->effets.agilite_boost);
+    }
     afficher_separateur(largeur);
 }
