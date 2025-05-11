@@ -41,18 +41,37 @@ void afficher_combat(Equipe e1, Equipe e2) {
     printf("| %-36s | %-36s |\n", e1.Nom_equipe, e2.Nom_equipe);
     afficher_separateur(largeur);
     
-    // Combattants équipe 1 vs équipe 2
-    printf("| 1. %-22s (PV: %-4d) | 1. %-22s (PV: %-4d) |\n",
-           e1.fighter_1->pv > 0 ? e1.fighter_1->nom : "[K.O.]", e1.fighter_1->pv,
-           e2.fighter_1->pv > 0 ? e2.fighter_1->nom : "[K.O.]", e2.fighter_1->pv);
+    // En-têtes des stats
+    printf("|%-18s %3s %3s %3s %3s |%-18s %3s %3s %3s %3s |\n",
+           "Combattant", "PV", "Att", "Def", "Agi",
+           "Combattant", "PV", "Att", "Def", "Agi");
     
-    printf("| 2. %-22s (PV: %-4d) | 2. %-22s (PV: %-4d) |\n",
-           e1.fighter_2->pv > 0 ? e1.fighter_2->nom : "[K.O.]", e1.fighter_2->pv,
-           e2.fighter_2->pv > 0 ? e2.fighter_2->nom : "[K.O.]", e2.fighter_2->pv);
+   
     
-    printf("| 3. %-22s (PV: %-4d) | 3. %-22s (PV: %-4d) |\n",
-           e1.fighter_3->pv > 0 ? e1.fighter_3->nom : "[K.O.]", e1.fighter_3->pv,
-           e2.fighter_3->pv > 0 ? e2.fighter_3->nom : "[K.O.]", e2.fighter_3->pv);
+    // Format compact pour les combattants
+    printf("|1.%-16s %3d %3d %3d %3d |1.%-16s %3d %3d %3d %3d |\n",
+           e1.fighter_1->pv > 0 ? e1.fighter_1->nom : "[K.O.]", 
+           e1.fighter_1->pv, e1.fighter_1->attaque,
+           e1.fighter_1->defense, e1.fighter_1->agilite,
+           e2.fighter_1->pv > 0 ? e2.fighter_1->nom : "[K.O.]", 
+           e2.fighter_1->pv, e2.fighter_1->attaque,
+           e2.fighter_1->defense, e2.fighter_1->agilite);
+    
+    printf("|2.%-16s %3d %3d %3d %3d |2.%-16s %3d %3d %3d %3d |\n",
+           e1.fighter_2->pv > 0 ? e1.fighter_2->nom : "[K.O.]", 
+           e1.fighter_2->pv, e1.fighter_2->attaque,
+           e1.fighter_2->defense, e1.fighter_2->agilite,
+           e2.fighter_2->pv > 0 ? e2.fighter_2->nom : "[K.O.]", 
+           e2.fighter_2->pv, e2.fighter_2->attaque,
+           e2.fighter_2->defense, e2.fighter_2->agilite);
+    
+    printf("|3.%-16s %3d %3d %3d %3d |3.%-16s %3d %3d %3d %3d |\n",
+           e1.fighter_3->pv > 0 ? e1.fighter_3->nom : "[K.O.]", 
+           e1.fighter_3->pv, e1.fighter_3->attaque,
+           e1.fighter_3->defense, e1.fighter_3->agilite,
+           e2.fighter_3->pv > 0 ? e2.fighter_3->nom : "[K.O.]", 
+           e2.fighter_3->pv, e2.fighter_3->attaque,
+           e2.fighter_3->defense, e2.fighter_3->agilite);
     
     afficher_separateur(largeur);
 }
