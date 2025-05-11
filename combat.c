@@ -96,49 +96,34 @@ void utiliser_technique_speciale(Combattant* utilisateur, TechniqueSpeciale* tec
 
 // Appliquer l’effet d’une technique sur une cible
 void appliquer_technique(Combattant* utilisateur, TechniqueSpeciale* tech, Combattant* cible) {
-    // Techniques de boost (détection via description)
-    if (strstr(tech->description, "Augmente") || strstr(tech->description, "Renforce") || 
-        strstr(tech->description, "Protection") || strstr(tech->description, "Resistance") ||
-        strstr(tech->description, "Acceleration") || strstr(tech->description, "Déplacement") ||
-        strstr(tech->description, "Esquive") || strstr(tech->description, "Contre-attaque") ||
-        strstr(tech->description, "Barrière") || strstr(tech->description, "Endurance")) {
-        
-        // Appliquer le bon boost selon la stat concernée
-        if (strstr(tech->description, "attaque")) {
-            cible->attaque += tech->valeur;
-            cible->effets.attaque_boost = tech->valeur;
-            printf("%s: Attaque augmentee de %d pour %d tours!\n", cible->nom, tech->valeur, tech->duree);
-        } else if (strstr(tech->description, "defense")) {
-            cible->defense += tech->valeur;
-            cible->effets.defense_boost = tech->valeur;
-            printf("%s: Defense augmentee de %d pour %d tours!\n", cible->nom, tech->valeur, tech->duree);
-        } else if (strstr(tech->description, "agilite")) {
-            cible->agilite += tech->valeur;
-            cible->effets.agilite_boost = tech->valeur;
-            printf("%s: Agilite augmentee de %d pour %d tours!\n", cible->nom, tech->valeur, tech->duree);
-        }
+    printf("%s utilise %s sur %s!\n", utilisateur->nom, tech->nom, cible->nom);
+
+    // Détection du type de technique
+    int est_attaque = strstr(tech->nom, "(attaque)") != NULL;
+    int est_defense = strstr(tech->nom, "(defense)") != NULL;
+    int est_agilite = strstr(tech->nom, "(agilite)") != NULL;
+
+    if (est_attaque) {
+        // Technique offensive
+        cible->pv = cible->pv - tech->valeur;
+        if (cible->pv <= 0) printf("%s est K.O.!\n", cible->nom);
+    }
+    else if (est_defense) {
+        // Technique défensive
+        cible->defense += tech->valeur;
+        cible->effets.defense_boost = tech->valeur;
         cible->effets.tours_restants = tech->duree;
+        printf("Defense augmentee de %d pour %d tours!\n", tech->valeur, tech->duree);
     }
-    // Soins
-    else if (strstr(tech->description, "Soin") || strstr(tech->description, "soin")) {
-        int nouveau_pv = cible->pv + tech->valeur;
-        if (nouveau_pv > cible->pv_max) nouveau_pv = cible->pv_max;
-        printf("%s soigne %s de %d PV! (%d -> %d)\n", utilisateur->nom, cible->nom, tech->valeur, cible->pv, nouveau_pv);
-        cible->pv = nouveau_pv;
+    else if (est_agilite) {
+        // Technique d'agilité
+        cible->agilite += tech->valeur;
+        cible->effets.agilite_boost = tech->valeur;
+        cible->effets.tours_restants = tech->duree;
+        printf("Agilite augmentee de %d pour %d tours!\n", tech->valeur, tech->duree);
     }
-    // Dégâts directs
-    else {
-        if (strcmp(tech->type_cible, "ennemi") == 0) {
-            cible->pv -= tech->valeur;
-            printf("%s utilise %s sur %s et inflige %d degats!\n", utilisateur->nom, tech->nom, cible->nom, tech->valeur);
-            if (cible->pv <= 0) {
-                cible->pv = 0;
-                printf("%s est K.O.!\n", cible->nom);
-            }
-        } else {
-            printf("%s utilise %s sur %s pour un effet benefique!\n", utilisateur->nom, tech->nom, cible->nom);
-        }
-    }
+
+
 }
 
 // Attaque classique, avec esquive et calcul de réduction de dégâts
@@ -374,5 +359,6 @@ void combat_pve(Equipe equipe_joueur, Equipe equipe_ia, int difficulte) {
     liberer_equipe(equipe_ia);
     menu_principal();
 }
+
 
 
