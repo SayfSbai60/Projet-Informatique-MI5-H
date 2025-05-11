@@ -43,7 +43,7 @@ typedef struct {
     Combattant* fighter_3;
 } Equipe;
 
-
+// Fonctions
 Combattant* charger_combattants(unsigned int* nb_combattants);
 Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe);
 Combattant* trouver_combattant_faible(Equipe* equipe);
@@ -56,4 +56,3 @@ Combattant* choisir_combattant_actif(Equipe* equipe);
 Combattant* choisir_cible(Equipe* equipe, const char* type);
 
 #endif
-
