@@ -136,7 +136,7 @@ void appliquer_technique(Combattant* utilisateur, TechniqueSpeciale* tech, Comba
                 printf("%s est K.O.!\n", cible->nom);
             }
         } else {
-            printf("%s utilise %s sur %s pour un effet bénéfique!\n", utilisateur->nom, tech->nom, cible->nom);
+            printf("%s utilise %s sur %s pour un effet benefique!\n", utilisateur->nom, tech->nom, cible->nom);
         }
     }
 }
