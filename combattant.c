@@ -132,7 +132,7 @@ Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
 
 Combattant* trouver_combattant_faible(Equipe* equipe) {
     Combattant* plus_faible = NULL;
-    int min_pv = 9999; // Initialisé à une valeur haute
+    int min_pv; // Initialisé à une valeur haute
 
     if (equipe->fighter_1->pv > 0 && equipe->fighter_1->pv < min_pv) {
         plus_faible = equipe->fighter_1;
