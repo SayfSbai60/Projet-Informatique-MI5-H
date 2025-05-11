@@ -54,7 +54,7 @@ Combattant* charger_combattants(unsigned int* nb_combattants) {
     return liste;
 }
 
-// Permet au joueur de créer une équipe de 3 combattants
+/// Permet au joueur de créer une équipe de 3 combattants
 Equipe creer_equipe(Combattant* liste, int nb_combattants, int num_equipe) {
     Equipe e;
     int choix;
@@ -179,7 +179,7 @@ void liberer_equipe(Equipe e) {
 // Affiche toutes les statistiques et techniques spéciales d’un combattant
 void afficher_details_combattant(Combattant c) {
     const int largeur = 60;
-
+    
     afficher_separateur(largeur);
     printf("| %-56s |\n", c.nom);
     afficher_separateur(largeur);
@@ -188,26 +188,29 @@ void afficher_details_combattant(Combattant c) {
     afficher_separateur(largeur);
 
     // Attaque spéciale
-    printf("| Attaque speciale: %-42s |\n", c.spe_attaque.nom);
+    printf("| Attaque speciale: %-42s \n", 
+           c.spe_attaque.nom, c.cooldown_attaque);
     printf("| %-56s |\n", c.spe_attaque.description);
-    printf("| Valeur: %-4d | Duree: %-2d tours | Recharge: %-2d tours |\n",
-           c.spe_attaque.valeur, c.spe_attaque.duree, c.spe_attaque.rechargement);
+    printf("| Valeur: %-4d | Duree: %-2d tours |\n",
+           c.spe_attaque.valeur, c.spe_attaque.duree);
     afficher_separateur(largeur);
 
     // Défense spéciale
-    printf("| Defense speciale: %-42s |\n", c.spe_defense.nom);
+    printf("| Defense speciale: %-42s \n",
+           c.spe_defense.nom, c.cooldown_defense);
     printf("| %-56s |\n", c.spe_defense.description);
-    printf("| Valeur: %-4d | Duree: %-2d tours | Recharge: %-2d tours |\n",
-           c.spe_defense.valeur, c.spe_defense.duree, c.spe_defense.rechargement);
+    printf("| Valeur: %-4d | Duree: %-2d tours |\n",
+           c.spe_defense.valeur, c.spe_defense.duree);
     afficher_separateur(largeur);
 
     // Agilité spéciale
-    printf("| Agilite speciale: %-42s |\n", c.spe_agilite.nom);
+    printf("| Agilite speciale: %-42s \n",
+           c.spe_agilite.nom, c.cooldown_agilite);
     printf("| %-56s |\n", c.spe_agilite.description);
-    printf("| Valeur: %-4d | Duree: %-2d tours | Recharge: %-2d tours |\n",
-           c.spe_agilite.valeur, c.spe_agilite.duree, c.spe_agilite.rechargement);
+    printf("| Valeur: %-4d | Duree: %-2d tours |\n",
+           c.spe_agilite.valeur, c.spe_agilite.duree);
     afficher_separateur(largeur);
-}
+    }
 
 // Affiche le nom et les stats de tous les membres d’une équipe
 void afficher_equipe(Equipe e) {
@@ -283,4 +286,3 @@ Combattant* choisir_cible(Equipe* equipe, const char* type) {
         default: return NULL;
     }
 }
-
