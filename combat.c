@@ -153,6 +153,32 @@ void attaque_de_base(Combattant* attaquant, Equipe* equipe_adverse) {
         printf("%s est K.O.!\n", cible->nom);
     }
 }
+void attaque_de_base_ia(Combattant* attaquant, Equipe* equipe_adverse) {
+    Combattant* cible = trouver_combattant_faible(equipe_adverse);
+    
+    // Calcul de la chance d'esquive
+    int chance_esquive = 10 + (cible->agilite - attaquant->agilite);
+    if (chance_esquive < 5) chance_esquive = 5;
+    if (chance_esquive > 90) chance_esquive = 90;
+
+    if (rand() % 100 < chance_esquive) {
+        printf("%s esquive l'attaque grace a son agilite (%d%% chance)!\n", cible->nom, chance_esquive);
+        return;
+    }
+
+    // Calcul de la réduction des dégâts via la défense
+    float reduction = (float)cible->defense / (cible->defense + 100);
+    int degats = attaquant->attaque * (1 - reduction);
+    if (degats < 1) degats = 1;
+
+    cible->pv -= degats;
+    printf("%s attaque %s et inflige %d degats! (Reduction: %.0f%%)\n", attaquant->nom, cible->nom, degats, reduction * 100);
+
+    if (cible->pv <= 0) {
+        cible->pv = 0;
+        printf("%s est K.O.!\n", cible->nom);
+    }
+}
 
 // Applique les effets temporaires (boost) et les retire s'ils expirent
 void appliquer_effets(Combattant* c) {
