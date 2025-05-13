@@ -14,5 +14,6 @@ void combat_pvp(Equipe equipe1, Equipe equipe2);
 void combat_pve(Equipe equipe_joueur, Equipe equipe_ia, int difficulte);
 void attaque_de_base_pnj(Combattant* attaquant, Equipe* equipe_adverse);
 void ordi_hard(Equipe* equipe_ordi, Equipe* equipe_joueur);
+void attaque_de_base_ia(Combattant* attaquant, Equipe* equipe_adverse);
 
 #endif
